@@ -1,0 +1,230 @@
+//
+//  LibraryContentView.swift
+//  SGNoti
+//
+//  Created by InHeritas on 8/13/24.
+//
+
+import SwiftUI
+import Alamofire
+import SwiftSoup
+import SwiftData
+import WebKit
+
+struct LibraryContentView: View {
+    let pkId: Int
+    let libraryCode: Int
+    @AppStorage("foldFileLise") private var foldFileList: Bool = true
+    @State private var noticeDetail: LibraryDetail?
+    @State private var isLoading: Bool = true
+    @State private var isPageLoading: Bool = true
+    @State private var webViewContentHeight: CGFloat = .zero
+    @State private var content: String = ""
+    @State private var isBookmarked: Bool = false
+    @State private var showShareSheet: Bool = false
+    @State private var settingsDetent = PresentationDetent.medium
+    @Environment(\.modelContext) private var modelContext
+    @Query private var bookmarks: [Bookmark_NoticeDetail]
+    @State private var showSafariView = false
+    @State private var selectedFileURL: Int? = nil
+    @State private var isExpanded: Bool = false
+    
+    var body: some View {
+        VStack {
+            if isLoading {
+                ProgressView()
+            } else if let noticeDetail = noticeDetail {
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(noticeDetail.title)
+                            .font(.headline)
+                            .bold()
+                        HStack {
+                            Text(noticeDetail.regDate)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            Text("｜")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                            Text(noticeDetail.userName)
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
+                        Divider()
+//                        if !noticeDetail.fileUrls.isEmpty {
+//                            VStack(alignment: .leading, spacing: 12) {
+//                                DisclosureGroup(isExpanded: $isExpanded) {
+//                                    ForEach(noticeDetail.fileUrls.indices, id: \.self) { fileUrl in
+//                                        Button(action: {
+//                                            selectedFileURL = fileUrl
+//                                            showSafariView = true
+//                                        }) {
+//                                            HStack {
+//                                                Image(systemName: "paperclip")
+//                                                Text(extractFileName(from: noticeDetail.fileUrls[fileUrl]) ?? "첨부파일")
+//                                                    .multilineTextAlignment(.leading)
+//                                                    .font(.subheadline)
+//                                                Spacer()
+//                                            }
+//                                            .padding(10)
+//                                            .background(
+//                                                RoundedRectangle(cornerRadius: 10)
+//                                                    .foregroundStyle(Color("grey100"))
+//                                            )
+//                                        }
+//                                        .padding(.top, fileUrl == 0 ? 10 : 0)
+//                                        .padding(.bottom, fileUrl == noticeDetail.fileUrls.count - 1 ? 10 : 0)
+//                                        .buttonStyle(PlainButtonStyle())
+//                                    }
+//                                    .fullScreenCover(item: self.$selectedFileURL) {
+//                                        SFSafariFileView(url: URL(string: removeSGParameter(from: noticeDetail.fileUrls[$0]))!)
+//                                            .ignoresSafeArea()
+//                                    }
+//                                } label: {
+//                                    Text("\(noticeDetail.fileUrls.count)개의 첨부파일")
+//                                        .font(.subheadline)
+//                                        .bold()
+//                                }
+//                            }
+//                            Divider()
+//                        }
+                        ZStack {
+                            WebView_Library(url: URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
+                                .frame(height: webViewContentHeight)
+                            if isPageLoading {
+                                VStack {
+                                    Spacer().frame(height: 200)
+                                    ProgressView()
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+            } else {
+                Text("Failed to load notice details")
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                HStack(spacing: 24) {
+                    Button(action: {
+                        toggleBookmark()
+                    }) {
+                        Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
+                    }
+                    Button(action: {
+                        showShareSheet.toggle()
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .sheet(isPresented: $showShareSheet) {
+                        if noticeDetail != nil {
+                            ShareSheet(items: [URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!])
+                                .presentationDetents(
+                                    [.medium, .large],
+                                    selection: $settingsDetent
+                                )
+                                .ignoresSafeArea()
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                await fetchNoticeDetail()
+                if !foldFileList {
+                    isExpanded = true
+                }
+                checkIfBookmarked()
+            }
+        }
+    }
+    
+    func fetchNoticeDetail() async {
+        let url = "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)"
+        AF.request(url).responseString { response in
+            DispatchQueue.main.async {
+                switch response.result {
+                case .success(let html):
+                    do {
+                        let document = try SwiftSoup.parse(html)
+                        
+                        let title = try document.select("div.boardInfo p.boardInfoTitle").text()
+                        var regDate = try document.select("div.boardInfo div.writeInfo").text()
+                        if let range = regDate.range(of: "\\d{4}-\\d{2}-\\d{2}", options: .regularExpression) {
+                            regDate = regDate[range].replacingOccurrences(of: "-", with: ".")
+                        }
+                        let userName = try document.select("div.boardInfo dl.writerInfo dd.writer span").text()
+                        
+                        let detail = LibraryDetail(title: title, userName: userName, regDate: regDate)
+                        self.noticeDetail = detail
+                        self.isLoading = false
+                    } catch {
+                        print("Error parsing HTML: \(error)")
+                        DispatchQueue.main.async {
+                            self.isLoading = false
+                        }
+                    }
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.isLoading = false
+                    }
+                }
+            }
+        }
+    }
+    
+    func checkIfBookmarked() {
+        isBookmarked = bookmarks.contains { $0.pkId == pkId }
+    }
+    
+    func toggleBookmark() {
+        if isBookmarked {
+            if let bookmark = bookmarks.first(where: { $0.pkId == pkId }) {
+                modelContext.delete(bookmark)
+                isBookmarked = false
+            }
+        } else {
+            guard let noticeDetail = noticeDetail else { return }
+            let newBookmark = Bookmark_NoticeDetail(
+                pkId: pkId,
+                title: noticeDetail.title,
+                regDate: noticeDetail.regDate,
+                userName: noticeDetail.userName,
+                content: "",
+                tags: ["library_notice", String(libraryCode)]
+            )
+            modelContext.insert(newBookmark)
+            isBookmarked = true
+        }
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to save bookmark: \(error.localizedDescription)")
+        }
+    }
+    
+    func extractFileName(from url: String) -> String? {
+        if let range = url.range(of: "?sg=") {
+            let fileName = url[range.upperBound...]
+            return String(fileName)
+        }
+        return nil
+    }
+    
+    func removeSGParameter(from url: String) -> String {
+        if let range = url.range(of: "?sg=") {
+            return String(url[..<range.lowerBound])
+        }
+        return url
+    }
+}
+
+#Preview {
+    LibraryContentView(pkId: 58786, libraryCode: 1)
+}
