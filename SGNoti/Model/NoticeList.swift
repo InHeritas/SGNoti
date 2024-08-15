@@ -13,6 +13,7 @@ struct NoticeData: Identifiable, Decodable, Equatable {
     let tags: [String]
     let userName: String?
     let regDate: String?
+    let config_pkid: String?
     let pkId: Int
     let isTop: Bool
     
@@ -20,19 +21,16 @@ struct NoticeData: Identifiable, Decodable, Equatable {
         case title
         case userName
         case regDate
+        case config_pkid
         case pkId
         case isTop
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let rawTitle = try container.decodeIfPresent(String.self, forKey: .title)
-        self.userName = try container.decodeIfPresent(String.self, forKey: .userName)
-        let rawRegDate = try container.decodeIfPresent(String.self, forKey: .regDate)
-        self.pkId = try container.decode(Int.self, forKey: .pkId)
-        let rawIsTop = try container.decodeIfPresent(String.self, forKey: .isTop)
-        self.isTop = (rawIsTop == "Y")
         
+        // title과 tags 처리
+        let rawTitle = try container.decodeIfPresent(String.self, forKey: .title)
         if let rawTitle = rawTitle {
             let tags = extractTags(from: rawTitle)
             self.tags = tags
@@ -42,6 +40,10 @@ struct NoticeData: Identifiable, Decodable, Equatable {
             self.title = rawTitle
         }
         
+        self.userName = try container.decodeIfPresent(String.self, forKey: .userName)
+        
+        // regDate 처리
+        let rawRegDate = try container.decodeIfPresent(String.self, forKey: .regDate)
         if let rawRegDate = rawRegDate, rawRegDate.count >= 8 {
             let startIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 0)
             let endIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 8)
@@ -52,6 +54,17 @@ struct NoticeData: Identifiable, Decodable, Equatable {
             self.regDate = "\(year).\(month).\(day)"
         } else {
             self.regDate = rawRegDate
+        }
+        
+        // config_pkid 처리
+        self.config_pkid = try container.decodeIfPresent(String.self, forKey: .config_pkid)
+        self.pkId = try container.decode(Int.self, forKey: .pkId)
+        
+        // isTop 처리
+        if let rawIsTop = try container.decodeIfPresent(String.self, forKey: .isTop) {
+            self.isTop = (rawIsTop == "Y")
+        } else {
+            self.isTop = false  // isTop 필드가 없으면 기본값은 false
         }
     }
 }

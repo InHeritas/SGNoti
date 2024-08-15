@@ -18,6 +18,10 @@ struct MainTabView: View {
                 Image(systemName: "book.closed.fill")
                 Text("도서관")
             }
+            TotalSearch().tabItem {
+                Image(systemName: "magnifyingglass")
+                Text("통합검색")
+            }
             Bookmark().tabItem {
                 Image(systemName: "bookmark.fill")
                 Text("북마크")

@@ -14,6 +14,7 @@
 		600DB68B2C64E9A20028A07C /* Bookmark_SwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB68A2C64E9A20028A07C /* Bookmark_SwiftData.swift */; };
 		600DB68D2C6507070028A07C /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB68C2C6507070028A07C /* ShareSheet.swift */; };
 		600DB6922C652EAD0028A07C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB6912C652EAD0028A07C /* Extensions.swift */; };
+		609357432C6DACCE00D421D1 /* TotalSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609357422C6DACCE00D421D1 /* TotalSearch.swift */; };
 		609A2C302C63A2FA0060392E /* SGNotiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609A2C2F2C63A2FA0060392E /* SGNotiApp.swift */; };
 		609A2C342C63A2FB0060392E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 609A2C332C63A2FB0060392E /* Assets.xcassets */; };
 		609A2C372C63A2FB0060392E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 609A2C362C63A2FB0060392E /* Preview Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		600DB68A2C64E9A20028A07C /* Bookmark_SwiftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark_SwiftData.swift; sourceTree = "<group>"; };
 		600DB68C2C6507070028A07C /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		600DB6912C652EAD0028A07C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		609357422C6DACCE00D421D1 /* TotalSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSearch.swift; sourceTree = "<group>"; };
 		609A2C2C2C63A2FA0060392E /* SGNoti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SGNoti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		609A2C2F2C63A2FA0060392E /* SGNotiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGNotiApp.swift; sourceTree = "<group>"; };
 		609A2C332C63A2FB0060392E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				609A2C472C63AA3B0060392E /* MainTabView.swift */,
 				609A2C492C63AABA0060392E /* Home.swift */,
 				60CA44E42C6A7905009CF1BC /* Library.swift */,
+				609357422C6DACCE00D421D1 /* TotalSearch.swift */,
 				60CA44D82C6A64C4009CF1BC /* ListView */,
 				60CA44D92C6A64CF009CF1BC /* ContentView */,
 				60CA44E82C6BB28C009CF1BC /* Bookmark */,
@@ -287,6 +290,7 @@
 				609A2C482C63AA3B0060392E /* MainTabView.swift in Sources */,
 				600DB6872C64DB8D0028A07C /* LabeledStepper.swift in Sources */,
 				60CA44E12C6A735D009CF1BC /* LibraryDetail.swift in Sources */,
+				609357432C6DACCE00D421D1 /* TotalSearch.swift in Sources */,
 				60CA44E32C6A76C5009CF1BC /* WebView_Library.swift in Sources */,
 				60CA44E52C6A7905009CF1BC /* Library.swift in Sources */,
 			);

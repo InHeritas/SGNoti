@@ -11,7 +11,7 @@ struct Library: View {
     var body: some View {
         NavigationStack {
             List {
-                Section() {
+                Section(footer: Text("도서관 공지사항은 통합검색에 표시되지 않습니다.")) {
                     NavigationLink(destination: LibraryListView(libraryCode: 1)) {
                         Text("로욜라 도서관")
                     }

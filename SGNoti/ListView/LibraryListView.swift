@@ -177,7 +177,12 @@ struct ListView_Library: View {
                 }
             }
             if isLoading {
-                Text("불러오는 중 ...")
+                HStack {
+                    Spacer()
+                    Text("불러오는 중 ...")
+                    Spacer()
+                }
+                .listSectionSeparator(.hidden, edges: .bottom)
             }
         }
         .listStyle(PlainListStyle())
