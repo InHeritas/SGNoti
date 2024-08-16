@@ -51,43 +51,45 @@ struct LibraryContentView: View {
                                 .foregroundColor(.gray)
                         }
                         Divider()
-//                        if !noticeDetail.fileUrls.isEmpty {
-//                            VStack(alignment: .leading, spacing: 12) {
-//                                DisclosureGroup(isExpanded: $isExpanded) {
-//                                    ForEach(noticeDetail.fileUrls.indices, id: \.self) { fileUrl in
-//                                        Button(action: {
-//                                            selectedFileURL = fileUrl
-//                                            showSafariView = true
-//                                        }) {
-//                                            HStack {
-//                                                Image(systemName: "paperclip")
-//                                                Text(extractFileName(from: noticeDetail.fileUrls[fileUrl]) ?? "첨부파일")
-//                                                    .multilineTextAlignment(.leading)
-//                                                    .font(.subheadline)
-//                                                Spacer()
-//                                            }
-//                                            .padding(10)
-//                                            .background(
-//                                                RoundedRectangle(cornerRadius: 10)
-//                                                    .foregroundStyle(Color("grey100"))
-//                                            )
-//                                        }
-//                                        .padding(.top, fileUrl == 0 ? 10 : 0)
-//                                        .padding(.bottom, fileUrl == noticeDetail.fileUrls.count - 1 ? 10 : 0)
-//                                        .buttonStyle(PlainButtonStyle())
-//                                    }
-//                                    .fullScreenCover(item: self.$selectedFileURL) {
-//                                        SFSafariFileView(url: URL(string: removeSGParameter(from: noticeDetail.fileUrls[$0]))!)
-//                                            .ignoresSafeArea()
-//                                    }
-//                                } label: {
-//                                    Text("\(noticeDetail.fileUrls.count)개의 첨부파일")
-//                                        .font(.subheadline)
-//                                        .bold()
-//                                }
-//                            }
-//                            Divider()
-//                        }
+                        if !noticeDetail.fileUrls.isEmpty {
+                            VStack(alignment: .leading, spacing: 12) {
+                                DisclosureGroup(isExpanded: $isExpanded) {
+                                    ForEach(noticeDetail.fileUrls.indices, id: \.self) { index in
+                                        Button(action: {
+                                            selectedFileURL = index
+                                            showSafariView = true
+                                        }) {
+                                            HStack {
+                                                Image(systemName: "paperclip")
+                                                Text("\(noticeDetail.fileNames[index])")
+                                                    .multilineTextAlignment(.leading)
+                                                    .font(.subheadline)
+                                                Spacer()
+                                            }
+                                            .padding(10)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .foregroundStyle(Color("grey100"))
+                                            )
+                                        }
+                                        .padding(.top, index == 0 ? 10 : 0)
+                                        .padding(.bottom, index == noticeDetail.fileUrls.count - 1 ? 10 : 0)
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                } label: {
+                                    Text("\(noticeDetail.fileUrls.count)개의 첨부파일")
+                                        .font(.subheadline)
+                                        .bold()
+                                }
+                            }
+                            .fullScreenCover(item: self.$selectedFileURL) { selectedFileURL in
+                                if let url = URL(string: noticeDetail.fileUrls[selectedFileURL]) {
+                                    SFSafariFileView(url: url)
+                                        .ignoresSafeArea()
+                                }
+                            }
+                            Divider()
+                        }
                         ZStack {
                             WebView_Library(url: URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
                                 .frame(height: webViewContentHeight)
@@ -159,7 +161,17 @@ struct LibraryContentView: View {
                         }
                         let userName = try document.select("div.boardInfo dl.writerInfo dd.writer span").text()
                         
-                        let detail = LibraryDetail(title: title, userName: userName, regDate: regDate)
+                        let files = try document.select("#divContent > div > div:nth-child(1) > div.additionalItems > div > ul > li > a")
+                        var fileUrl: [String] = []
+                        var fileName: [String] = []
+                        for element in files {
+                            if let href = try? element.attr("href"), let title = try? element.text() {
+                                fileUrl.append(href)
+                                fileName.append(title)
+                            }
+                        }
+                        
+                        let detail = LibraryDetail(title: title, userName: userName, regDate: regDate, fileUrls: fileUrl, fileNames: fileName)
                         self.noticeDetail = detail
                         self.isLoading = false
                     } catch {
@@ -208,23 +220,8 @@ struct LibraryContentView: View {
             print("Failed to save bookmark: \(error.localizedDescription)")
         }
     }
-    
-    func extractFileName(from url: String) -> String? {
-        if let range = url.range(of: "?sg=") {
-            let fileName = url[range.upperBound...]
-            return String(fileName)
-        }
-        return nil
-    }
-    
-    func removeSGParameter(from url: String) -> String {
-        if let range = url.range(of: "?sg=") {
-            return String(url[..<range.lowerBound])
-        }
-        return url
-    }
 }
 
 #Preview {
-    LibraryContentView(pkId: 58786, libraryCode: 1)
+    LibraryContentView(pkId: 57145, libraryCode: 1)
 }

@@ -11,4 +11,6 @@ struct LibraryDetail: Decodable {
     var title: String
     var userName: String
     var regDate: String
+    var fileUrls: [String]
+    var fileNames: [String]
 }
