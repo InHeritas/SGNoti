@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseMessaging
 
 struct Setting: View {
     @AppStorage("foldFileLise") private var foldFileList: Bool = true
