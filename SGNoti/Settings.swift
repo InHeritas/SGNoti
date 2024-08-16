@@ -6,12 +6,24 @@
 //
 
 import SwiftUI
-import Firebase
+import SwiftData
+import FirebaseCore
+import FirebaseFirestore
 import FirebaseMessaging
 
 struct Setting: View {
     @AppStorage("foldFileLise") private var foldFileList: Bool = true
+    @State private var subscribedBoards = UserDefaults.standard.object(forKey: "subscribedBoards") as? [Int] ?? [1, 2, 3, 141]
+    @State private var subscribedKeywords = UserDefaults.standard.object(forKey: "subscribedKeywords") as? [String] ?? []
+    
     @State private var totalSize: Int64 = 0
+    @State private var subscribed_Boards: [Int] = [1, 2, 3, 141, 142]
+    @State private var subscribed_Keywords: [String] = []
+    @State private var keyword: String = ""
+    @State private var isNotificationEnabled: Bool = true
+    
+    let boards = [1, 2, 3, 141, 142]
+    
     var body: some View {
         NavigationStack {
             List {
@@ -20,6 +32,93 @@ struct Setting: View {
                         Toggle(isOn: $foldFileList, label: {
                             Text("첨부파일 목록 접어두기")
                         })
+                    }
+                }
+                if !isNotificationEnabled {
+                    Section {
+                        HStack {
+                            Image(systemName: "exclamationmark.circle.fill")
+                            Text("알림이 비활성화 상태입니다.")
+                        }
+                        Button(action: {
+                            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                                if UIApplication.shared.canOpenURL(appSettings) {
+                                    UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
+                                }
+                            }
+                        }) {
+                            Text("앱 설정 열기")
+                        }
+                        Button(action: {
+                            checkNotificationSettings() { isEnabled in
+                                isNotificationEnabled = isEnabled
+                            }
+                        }) {
+                            Text("설정 새로고침")
+                        }
+                    }
+                }
+                Section(header: Text("새 글 알림 설정")) {
+                    ForEach(boards) { board in
+                        HStack {
+                            Text(noticeTitle(board))
+                            Spacer()
+                            Toggle(isOn: Binding(
+                                get: {
+                                    subscribedBoards.contains(board)
+                                },
+                                set: { isOn in
+                                    if isOn {
+                                        subscribedBoards.append(board)
+                                    } else {
+                                        if let index = subscribedBoards.firstIndex(of: board) {
+                                            subscribedBoards.remove(at: index)
+                                        }
+                                    }
+                                }
+                            )) {
+                                Text("")
+                            }
+                            .disabled(!isNotificationEnabled)
+                        }
+                    }
+                    .onChange(of: subscribedBoards) { newValue, _ in
+                        UserDefaults.standard.set(subscribed_Boards, forKey: "subscribedBoards")
+                        saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
+                    }
+                }
+                Section(header: Text("키워드 알림 설정"), footer: Text("공백만 있거나 한글, 영어가 포함되지 않은 키워드는 추가할 수 없습니다.")) {
+                    HStack {
+                        TextField("추가할 키워드를 입력하세요", text: $keyword)
+                            .onSubmit {
+                                addKeyword()
+                            }
+                        Spacer()
+                        Button(action: {
+                            addKeyword()
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(Color.green)
+                        }
+                        .disabled(!isNotificationEnabled)
+                    }
+                    .onChange(of: subscribedKeywords) { newValue, _ in
+                        UserDefaults.standard.set(subscribed_Keywords, forKey: "subscribedKeywords")
+                        saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
+                    }
+                    if !subscribedKeywords.isEmpty {
+                        ForEach(subscribedKeywords.indices, id: \.self) { index in
+                            HStack {
+                                Text(subscribedKeywords[index])
+                                Spacer()
+                                Button(action: {
+                                    subscribedKeywords.remove(at: index)
+                                }) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundStyle(Color.red)
+                                }
+                            }
+                        }
                     }
                 }
                 Section(header: Text("임시 파일 관리"), footer: Text("첨부파일 다운로드 시 미리보기 창을 닫으면 기본적으로 해당 파일은 삭제됩니다. 첨부파일이 삭제되지 않은 경우 직접 삭제할 수 있습니다.")) {
@@ -56,7 +155,93 @@ struct Setting: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear() {
                 calculateTotalSize()
+                checkNotificationSettings() { isEnabled in
+                    isNotificationEnabled = isEnabled
+                }
             }
+        }
+    }
+    
+    func checkNotificationSettings(completion: @escaping (Bool) -> Void) {
+        let current = UNUserNotificationCenter.current()
+        current.getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .authorized, .provisional, .ephemeral:
+                // 알림이 허용된 상태입니다.
+                completion(true)
+            case .denied, .notDetermined:
+                // 알림이 거부되었거나 아직 요청되지 않은 상태입니다.
+                completion(false)
+            @unknown default:
+                completion(false)
+            }
+        }
+    }
+    
+    func saveUserSettings(subscribedBoards: [Int], keywords: [String]) {
+        guard let userId = getUserId() else {
+            print("Error: Could not retrieve identifierForVendor.")
+            return
+        }
+        
+        let db = Firestore.firestore()
+        
+        // Firestore에 데이터 저장
+        db.collection("users").document(userId).updateData([
+            "subscribedBoards": subscribedBoards,
+            "keywords": keywords
+        ]) { error in
+            if let error = error {
+                print("Error saving user settings: \(error)")
+            } else {
+                print("User settings saved successfully")
+            }
+        }
+    }
+    
+    func getUserId() -> String? {
+        return UIDevice.current.identifierForVendor?.uuidString
+    }
+    
+    func readFromFirestore() {
+        let firestoreManager = FirestoreManager()
+        firestoreManager.fetchDocument(collectionName: "users", documentID: "E4F44FF2-0499-42CC-911F-46E9095287A3") { (document, error) in
+            if let error = error {
+                print("Failed to fetch document: \(error)")
+            } else if let document = document {
+                print("\(document.documentID) => \(document.data() ?? [:])")
+            }
+        }
+    }
+    
+    private func addKeyword() {
+        let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
+        let specialCharacterPattern = "^[^a-zA-Z0-9가-힣]+$"
+        let numericPattern = "^[0-9]+$"
+    
+        if !trimmedKeyword.isEmpty &&
+            !subscribedKeywords.contains(trimmedKeyword) &&
+            trimmedKeyword.range(of: specialCharacterPattern, options: .regularExpression) == nil &&
+            trimmedKeyword.range(of: numericPattern, options: .regularExpression) == nil {
+            subscribedKeywords.append(trimmedKeyword)
+        }
+        
+        keyword = ""
+    }
+    
+    func noticeTitle(_ bbsConfigFk: Int) -> String {
+        if bbsConfigFk == 1 {
+            return "일반공지"
+        } else if bbsConfigFk == 2 {
+            return "학사공지"
+        } else if bbsConfigFk == 141 {
+            return "장학공지"
+        } else if bbsConfigFk == 3 {
+            return "종합봉사실"
+        } else if bbsConfigFk == 142 {
+            return "행사특강"
+        } else {
+            return "공지사항"
         }
     }
     
@@ -106,6 +291,45 @@ struct Setting: View {
         formatter.allowedUnits = [.useKB, .useMB, .useGB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: size)
+    }
+}
+
+class FirestoreManager {
+    let db = Firestore.firestore()
+    
+    // 특정 컬렉션에서 모든 문서를 읽어오는 함수
+    func fetchAllDocuments(collectionName: String, completion: @escaping ([QueryDocumentSnapshot]?, Error?) -> Void) {
+        db.collection(collectionName).getDocuments { (querySnapshot, error) in
+            if let error = error {
+                print("Error getting documents: \(error)")
+                completion(nil, error)
+            } else {
+                if let documents = querySnapshot?.documents {
+                    completion(documents, nil)
+                } else {
+                    completion(nil, nil)
+                }
+            }
+        }
+    }
+    
+    // 특정 문서를 읽어오는 함수
+    func fetchDocument(collectionName: String, documentID: String, completion: @escaping (DocumentSnapshot?, Error?) -> Void) {
+        let docRef = db.collection(collectionName).document(documentID)
+        
+        docRef.getDocument { (document, error) in
+            if let error = error {
+                print("Error getting document: \(error)")
+                completion(nil, error)
+            } else {
+                if let document = document, document.exists {
+                    completion(document, nil)
+                } else {
+                    print("Document does not exist")
+                    completion(nil, nil)
+                }
+            }
+        }
     }
 }
 

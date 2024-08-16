@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct MainTabView: View {
     var body: some View {
@@ -31,7 +32,7 @@ struct MainTabView: View {
                 Text("설정")
             }
         }
-    }
+    } 
 }
 
 #Preview {
