@@ -16,6 +16,7 @@ struct NoticeDetail: Decodable {
     let regDate: String
     let viewCount: Int
     var fileUrls: [String]
+    var fileDownloading: [Bool]
     
     enum CodingKeys: String, CodingKey {
         case pkId, title, userName, content, regDate, viewCount, fileValue1, fileValue2, fileValue3, fileValue4, fileValue5
@@ -50,20 +51,26 @@ struct NoticeDetail: Decodable {
         
         // Extract file URLs and decode
         self.fileUrls = []
+        self.fileDownloading = []
         if let fileValue1 = try container.decodeIfPresent(String.self, forKey: .fileValue1) {
             self.fileUrls.append(fileValue1)
+            self.fileDownloading.append(false)
         }
         if let fileValue2 = try container.decodeIfPresent(String.self, forKey: .fileValue2) {
             self.fileUrls.append(fileValue2)
+            self.fileDownloading.append(false)
         }
         if let fileValue3 = try container.decodeIfPresent(String.self, forKey: .fileValue3) {
             self.fileUrls.append(fileValue3)
+            self.fileDownloading.append(false)
         }
         if let fileValue4 = try container.decodeIfPresent(String.self, forKey: .fileValue4) {
             self.fileUrls.append(fileValue4)
+            self.fileDownloading.append(false)
         }
         if let fileValue5 = try container.decodeIfPresent(String.self, forKey: .fileValue5) {
             self.fileUrls.append(fileValue5)
+            self.fileDownloading.append(false)
         }
     }
 }

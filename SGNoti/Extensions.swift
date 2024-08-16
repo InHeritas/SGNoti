@@ -47,3 +47,31 @@ extension Spacer {
         }
     }
 }
+
+// MARK:  파일 미리보기
+extension UIViewController: UIDocumentInteractionControllerDelegate {
+    public func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
+        return self
+    }
+    
+    public func documentInteractionControllerDidEndPreview(_ controller: UIDocumentInteractionController) {
+        // 미리보기가 끝난 후 파일 삭제
+        if let fileURL = controller.url {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                print("파일 삭제에 실패했습니다: \(error)")
+            }
+        }
+    }
+    
+    public func documentInteractionControllerDidDismissOptionsMenu(_ controller: UIDocumentInteractionController) {
+        if let fileURL = controller.url {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                print("파일 삭제에 실패했습니다: \(error)")
+            }
+        }
+    }
+}

@@ -57,16 +57,24 @@ struct LibraryContentView: View {
                                     ForEach(noticeDetail.fileUrls.indices, id: \.self) { index in
                                         Button(action: {
                                             selectedFileURL = index
-                                            showSafariView = true
+                                            downloadAndOpenFile(at: noticeDetail.fileUrls[index])
                                         }) {
                                             HStack {
-                                                Image(systemName: "paperclip")
+                                                if noticeDetail.fileDownloading[index] {
+                                                    ProgressView()
+                                                        .frame(width: 14, height: 14)
+                                                        .hpadding(5)
+                                                } else {
+                                                    Image(systemName: "paperclip")
+                                                        .frame(width: 14, height: 14)
+                                                        .hpadding(5)
+                                                }
                                                 Text("\(noticeDetail.fileNames[index])")
                                                     .multilineTextAlignment(.leading)
                                                     .font(.subheadline)
-                                                Spacer()
                                             }
-                                            .padding(10)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(14)
                                             .background(
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .foregroundStyle(Color("grey100"))
@@ -80,12 +88,6 @@ struct LibraryContentView: View {
                                     Text("\(noticeDetail.fileUrls.count)개의 첨부파일")
                                         .font(.subheadline)
                                         .bold()
-                                }
-                            }
-                            .fullScreenCover(item: self.$selectedFileURL) { selectedFileURL in
-                                if let url = URL(string: noticeDetail.fileUrls[selectedFileURL]) {
-                                    SFSafariFileView(url: url)
-                                        .ignoresSafeArea()
                                 }
                             }
                             Divider()
@@ -164,14 +166,16 @@ struct LibraryContentView: View {
                         let files = try document.select("#divContent > div > div:nth-child(1) > div.additionalItems > div > ul > li > a")
                         var fileUrl: [String] = []
                         var fileName: [String] = []
+                        var fileDownloading: [Bool] = []
                         for element in files {
                             if let href = try? element.attr("href"), let title = try? element.text() {
                                 fileUrl.append(href)
                                 fileName.append(title)
+                                fileDownloading.append(false)
                             }
                         }
                         
-                        let detail = LibraryDetail(title: title, userName: userName, regDate: regDate, fileUrls: fileUrl, fileNames: fileName)
+                        let detail = LibraryDetail(title: title, userName: userName, regDate: regDate, fileUrls: fileUrl, fileNames: fileName, fileDownloading: fileDownloading)
                         self.noticeDetail = detail
                         self.isLoading = false
                     } catch {
@@ -188,6 +192,79 @@ struct LibraryContentView: View {
                 }
             }
         }
+    }
+    
+    func downloadAndOpenFile(at urlString: String) {
+        if let selectedFileURLIndex = selectedFileURL {
+            noticeDetail?.fileDownloading[selectedFileURLIndex] = true
+            
+            // Download file
+            downloadFile(from: urlString) { url in
+                if let url = url {
+                    if url.absoluteString.contains(".hwp") {
+                        openDownloadedHWPFile(fileURL: url)
+                    } else {
+                        openDownloadedFile(fileURL: url)
+                    }
+                } else {
+                    print("파일 다운로드 실패")
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    noticeDetail?.fileDownloading[selectedFileURLIndex] = false
+                }
+            }
+        } else {
+            print("파일 다운로드 실패")
+        }
+    }
+    
+    func downloadFile(from url: String, completion: @escaping (URL?) -> Void) {
+        AF.request(url).responseData { response in
+            guard response.response != nil else {
+                completion(nil)
+                return
+            }
+            
+            if let noticeDetail = noticeDetail, let selectedFileURLIndex = selectedFileURL {
+                let fileName = noticeDetail.fileNames[selectedFileURLIndex]
+                
+                let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                let fileURL = temporaryDirectoryURL.appendingPathComponent(fileName)
+                
+                do {
+                    try response.data?.write(to: fileURL)
+                    completion(fileURL)
+                } catch {
+                    completion(nil)
+                }
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
+    func openDownloadedFile(fileURL: URL) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            return
+        }
+        
+        let documentInteractionController = UIDocumentInteractionController(url: fileURL)
+        documentInteractionController.delegate = rootViewController
+        
+        // 전체 화면 미리보기
+        documentInteractionController.presentPreview(animated: true)
+    }
+    
+    // HWP 파일은 미리보기로 열리지 않음
+    func openDownloadedHWPFile(fileURL: URL) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            return
+        }
+        
+        let documentInteractionController = UIDocumentInteractionController(url: fileURL)
+        documentInteractionController.presentOptionsMenu(from: .zero, in: rootViewController.view, animated: true)
     }
     
     func checkIfBookmarked() {

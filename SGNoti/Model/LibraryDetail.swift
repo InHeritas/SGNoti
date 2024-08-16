@@ -13,4 +13,5 @@ struct LibraryDetail: Decodable {
     var regDate: String
     var fileUrls: [String]
     var fileNames: [String]
+    var fileDownloading: [Bool]
 }

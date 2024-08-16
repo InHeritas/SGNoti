@@ -61,31 +61,35 @@ struct NoticeContentView: View {
                         if !noticeDetail.fileUrls.isEmpty {
                             VStack(alignment: .leading, spacing: 12) {
                                 DisclosureGroup(isExpanded: $isExpanded) {
-                                    ForEach(noticeDetail.fileUrls.indices, id: \.self) { fileUrl in
+                                    ForEach(noticeDetail.fileUrls.indices, id: \.self) { index in
                                         Button(action: {
-                                            selectedFileURL = fileUrl
-                                            showSafariView = true
+                                            selectedFileURL = index
+                                            downloadAndOpenFile(at: noticeDetail.fileUrls[index])
                                         }) {
                                             HStack {
-                                                Image(systemName: "paperclip")
-                                                Text(extractFileName(from: noticeDetail.fileUrls[fileUrl]) ?? "첨부파일")
+                                                if noticeDetail.fileDownloading[index] {
+                                                    ProgressView()
+                                                        .frame(width: 14, height: 14)
+                                                        .hpadding(5)
+                                                } else {
+                                                    Image(systemName: "paperclip")
+                                                        .frame(width: 14, height: 14)
+                                                        .hpadding(5)
+                                                }
+                                                Text(extractFileName(from: noticeDetail.fileUrls[index]) ?? "첨부파일")
                                                     .multilineTextAlignment(.leading)
                                                     .font(.subheadline)
-                                                Spacer()
                                             }
-                                            .padding(10)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(14)
                                             .background(
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .foregroundStyle(Color("grey100"))
                                             )
                                         }
-                                        .padding(.top, fileUrl == 0 ? 10 : 0)
-                                        .padding(.bottom, fileUrl == noticeDetail.fileUrls.count - 1 ? 10 : 0)
+                                        .padding(.top, index == 0 ? 10 : 0)
+                                        .padding(.bottom, index == noticeDetail.fileUrls.count - 1 ? 10 : 0)
                                         .buttonStyle(PlainButtonStyle())
-                                    }
-                                    .fullScreenCover(item: self.$selectedFileURL) {
-                                        SFSafariFileView(url: URL(string: removeSGParameter(from: noticeDetail.fileUrls[$0]))!)
-                                            .ignoresSafeArea()
                                     }
                                 } label: {
                                     Text("\(noticeDetail.fileUrls.count)개의 첨부파일")
@@ -173,6 +177,79 @@ struct NoticeContentView: View {
                 }
             }
         }
+    }
+    
+    func downloadAndOpenFile(at urlString: String) {
+        if let selectedFileURLIndex = selectedFileURL {
+            noticeDetail?.fileDownloading[selectedFileURLIndex] = true
+            
+            // Download file
+            downloadFile(from: urlString) { url in
+                if let url = url {
+                    if url.absoluteString.contains(".hwp") {
+                        openDownloadedHWPFile(fileURL: url)
+                    } else {
+                        openDownloadedFile(fileURL: url)
+                    }
+                } else {
+                    print("파일 다운로드 실패")
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    noticeDetail?.fileDownloading[selectedFileURLIndex] = false
+                }
+            }
+        } else {
+            print("파일 다운로드 실패")
+        }
+    }
+    
+    func downloadFile(from url: String, completion: @escaping (URL?) -> Void) {
+        AF.request(url).responseData { response in
+            guard response.response != nil else {
+                completion(nil)
+                return
+            }
+            
+            if let noticeDetail = noticeDetail, let selectedFileURLIndex = selectedFileURL {
+                let fileName = extractFileName(from: noticeDetail.fileUrls[selectedFileURLIndex]) ?? "첨부파일"
+                
+                let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+                let fileURL = temporaryDirectoryURL.appendingPathComponent(fileName)
+                
+                do {
+                    try response.data?.write(to: fileURL)
+                    completion(fileURL)
+                } catch {
+                    completion(nil)
+                }
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
+    func openDownloadedFile(fileURL: URL) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            return
+        }
+        
+        let documentInteractionController = UIDocumentInteractionController(url: fileURL)
+        documentInteractionController.delegate = rootViewController
+        
+        // 전체 화면 미리보기
+        documentInteractionController.presentPreview(animated: true)
+    }
+    
+    // HWP 파일은 미리보기로 열리지 않음
+    func openDownloadedHWPFile(fileURL: URL) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            return
+        }
+        
+        let documentInteractionController = UIDocumentInteractionController(url: fileURL)
+        documentInteractionController.presentOptionsMenu(from: .zero, in: rootViewController.view, animated: true)
     }
     
     func checkIfBookmarked() {
