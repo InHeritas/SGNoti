@@ -14,6 +14,7 @@
 		600DB68B2C64E9A20028A07C /* Bookmark_SwiftData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB68A2C64E9A20028A07C /* Bookmark_SwiftData.swift */; };
 		600DB68D2C6507070028A07C /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB68C2C6507070028A07C /* ShareSheet.swift */; };
 		600DB6922C652EAD0028A07C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600DB6912C652EAD0028A07C /* Extensions.swift */; };
+		604CE8EC2C722C6C00420F0D /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 604CE8EB2C722C6C00420F0D /* Notification.swift */; };
 		609357432C6DACCE00D421D1 /* TotalSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609357422C6DACCE00D421D1 /* TotalSearch.swift */; };
 		609A2C302C63A2FA0060392E /* SGNotiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609A2C2F2C63A2FA0060392E /* SGNotiApp.swift */; };
 		609A2C342C63A2FB0060392E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 609A2C332C63A2FB0060392E /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		600DB68A2C64E9A20028A07C /* Bookmark_SwiftData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookmark_SwiftData.swift; sourceTree = "<group>"; };
 		600DB68C2C6507070028A07C /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		600DB6912C652EAD0028A07C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		604CE8EB2C722C6C00420F0D /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		609357422C6DACCE00D421D1 /* TotalSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalSearch.swift; sourceTree = "<group>"; };
 		609A2C2C2C63A2FA0060392E /* SGNoti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SGNoti.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		609A2C2F2C63A2FA0060392E /* SGNotiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SGNotiApp.swift; sourceTree = "<group>"; };
@@ -120,6 +122,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		604CE8EA2C722C5200420F0D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				609A2C432C63A4D90060392E /* Settings.swift */,
+				604CE8EB2C722C6C00420F0D /* Notification.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		609A2C232C63A2FA0060392E = {
 			isa = PBXGroup;
 			children = (
@@ -149,7 +160,7 @@
 				60CA44D82C6A64C4009CF1BC /* ListView */,
 				60CA44D92C6A64CF009CF1BC /* ContentView */,
 				60CA44E82C6BB28C009CF1BC /* Bookmark */,
-				609A2C432C63A4D90060392E /* Settings.swift */,
+				604CE8EA2C722C5200420F0D /* Settings */,
 				60F870C52C666B6E002F2950 /* OSSView.swift */,
 				60F870C32C666A0B002F2950 /* Model */,
 				60F870C42C666A1C002F2950 /* Web */,
@@ -330,6 +341,7 @@
 				600DB68B2C64E9A20028A07C /* Bookmark_SwiftData.swift in Sources */,
 				60CA44D72C6A6334009CF1BC /* LibraryList.swift in Sources */,
 				609A2C482C63AA3B0060392E /* MainTabView.swift in Sources */,
+				604CE8EC2C722C6C00420F0D /* Notification.swift in Sources */,
 				600DB6872C64DB8D0028A07C /* LabeledStepper.swift in Sources */,
 				60CA44E12C6A735D009CF1BC /* LibraryDetail.swift in Sources */,
 				609357432C6DACCE00D421D1 /* TotalSearch.swift in Sources */,
