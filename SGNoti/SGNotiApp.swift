@@ -13,6 +13,7 @@ import FirebaseFirestore
 
 @main
 struct SGNotiApp: App {
+    @Environment(\.scenePhase) var scenePhase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
@@ -20,6 +21,11 @@ struct SGNotiApp: App {
             MainTabView()
                 .tint(Color("sogang_red"))
                 .modelContainer(for: Bookmark_NoticeDetail.self)
+                .onChange(of: scenePhase) { oldPhase, newPhase in
+                    if newPhase == .active {
+                        UNUserNotificationCenter.current().setBadgeCount(0)
+                    }
+                }
         }
     }
 }
@@ -30,7 +36,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
         FirebaseApp.configure()
         
         UNUserNotificationCenter.current().delegate = self
-        UNUserNotificationCenter.current().setBadgeCount(0)
         
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(
@@ -63,6 +68,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
     // 포그라운드 상태에서 푸시 알림 수신 시 호출
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .badge, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // 사용자가 알림을 지운 경우 배지 카운트를 0으로 설정
+        if response.actionIdentifier == UNNotificationDismissActionIdentifier {
+            UNUserNotificationCenter.current().setBadgeCount(0)
+        }
+        
+        completionHandler()
     }
     
     // Firestore에서 유저 데이터를 확인하고 로컬에 저장하는 함수
