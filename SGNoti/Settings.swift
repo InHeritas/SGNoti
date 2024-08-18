@@ -13,12 +13,10 @@ import FirebaseMessaging
 
 struct Setting: View {
     @AppStorage("foldFileLise") private var foldFileList: Bool = true
-    @State private var subscribedBoards = UserDefaults.standard.object(forKey: "subscribedBoards") as? [Int] ?? [1, 2, 3, 141]
-    @State private var subscribedKeywords = UserDefaults.standard.object(forKey: "subscribedKeywords") as? [String] ?? []
+    @AppStorage("subscribedBoards") private var subscribedBoards: [Int] = [1, 2, 3, 141]
+    @AppStorage("subscribedKeywords") private var subscribedKeywords: [String] = []
     
     @State private var totalSize: Int64 = 0
-    @State private var subscribed_Boards: [Int] = [1, 2, 3, 141, 142]
-    @State private var subscribed_Keywords: [String] = []
     @State private var keyword: String = ""
     @State private var isNotificationEnabled: Bool = true
     
@@ -83,7 +81,6 @@ struct Setting: View {
                         }
                     }
                     .onChange(of: subscribedBoards) { newValue, _ in
-                        UserDefaults.standard.set(subscribed_Boards, forKey: "subscribedBoards")
                         saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
                     }
                 }
@@ -103,7 +100,6 @@ struct Setting: View {
                         .disabled(!isNotificationEnabled)
                     }
                     .onChange(of: subscribedKeywords) { newValue, _ in
-                        UserDefaults.standard.set(subscribed_Keywords, forKey: "subscribedKeywords")
                         saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
                     }
                     if !subscribedKeywords.isEmpty {

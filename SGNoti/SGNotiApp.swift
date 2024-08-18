@@ -67,8 +67,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
     
     // Firestore에서 유저 데이터를 확인하고 로컬에 저장하는 함수
     private func checkUserDataInFirestore(userId: String, fcmToken: String) {
-        let subscribedBoards = UserDefaults.standard.object(forKey: "subscribedBoards") as? [Int] ?? [1, 2, 3, 141]
-        let subscribedKeywords = UserDefaults.standard.object(forKey: "subscribedKeywords") as? [String] ?? []
+        @AppStorage("subscribedBoards") var subscribedBoards: [Int] = [1, 2, 3, 141]
+        @AppStorage("subscribedKeywords") var subscribedKeywords: [String] = []
         let db = Firestore.firestore()
         
         let userRef = db.collection("users").document(userId)
