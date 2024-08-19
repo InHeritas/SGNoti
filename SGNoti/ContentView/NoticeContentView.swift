@@ -300,5 +300,5 @@ struct NoticeContentView: View {
 }
 
 #Preview {
-    NoticeContentView(pkId: 544205)
+    NoticeContentView(pkId: 544696)
 }

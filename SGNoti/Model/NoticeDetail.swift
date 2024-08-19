@@ -37,14 +37,19 @@ struct NoticeDetail: Decodable {
         
         // Extract and format date
         let rawRegDate = try container.decode(String.self, forKey: .regDate)
-        if rawRegDate.count >= 8 {
+        if rawRegDate.count >= 12 {
             let startIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 0)
-            let endIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 8)
-            let dateSubstring = rawRegDate[startIndex..<endIndex]
+            let dateEndIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 8)
+            let dateSubstring = rawRegDate[startIndex..<dateEndIndex]
             let year = dateSubstring.prefix(4)
             let month = dateSubstring.dropFirst(4).prefix(2)
             let day = dateSubstring.dropFirst(6).prefix(2)
-            self.regDate = "\(year).\(month).\(day)"
+            let timeStartIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 8)
+            let timeEndIndex = rawRegDate.index(rawRegDate.startIndex, offsetBy: 12)
+            let timeSubstring = rawRegDate[timeStartIndex..<timeEndIndex]
+            let hour = timeSubstring.prefix(2)
+            let minute = timeSubstring.dropFirst(2).prefix(2)
+            self.regDate = "\(year).\(month).\(day) \(hour):\(minute)"
         } else {
             self.regDate = rawRegDate
         }

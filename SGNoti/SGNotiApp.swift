@@ -70,15 +70,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
         completionHandler([.banner, .badge, .sound])
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // 사용자가 알림을 지운 경우 배지 카운트를 0으로 설정
-        if response.actionIdentifier == UNNotificationDismissActionIdentifier {
-            UNUserNotificationCenter.current().setBadgeCount(0)
-        }
-        
-        completionHandler()
-    }
-    
     // Firestore에서 유저 데이터를 확인하고 로컬에 저장하는 함수
     private func checkUserDataInFirestore(userId: String, fcmToken: String) {
         @AppStorage("subscribedBoards") var subscribedBoards: [Int] = [1, 2, 3, 141]
