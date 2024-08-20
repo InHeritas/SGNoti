@@ -10,9 +10,9 @@ import Alamofire
 import UserNotifications
 
 struct Home: View {
-    @AppStorage("sectionOrderData") private var sectionOrderData: String = ""
-    @AppStorage("noticeCountsData") private var noticeCountsData: String = "[4, 4, 4, 4, 4]"
-    @AppStorage("hiddenNoticesData") private var hiddenNoticesData: String = "[]"
+    @AppStorage("sectionOrderData") private var sectionOrder: [Int] = [2, 1, 141, 3, 142]
+    @AppStorage("noticeCountsData") private var noticeCounts: [Int] = [4, 4, 4, 4, 4]
+    @AppStorage("hiddenNoticesData") private var hiddenNotices: [Int] = []
     
     @State private var academicNotices: [NoticeData] = []
     @State private var generalNotices: [NoticeData] = []
@@ -27,30 +27,6 @@ struct Home: View {
     
     @State private var noticeName: [String] = ["학사공지", "일반공지", "장학공지", "종합봉사실", "행사특강"]
     @State private var bbsConfigFk: [Int] = [2, 1, 141, 3, 142]
-    
-    @State private var sectionOrder: [Int] = []
-    @State private var noticeCounts: [Int] = []
-    @State private var hiddenNotices: Set<Int> = []
-    
-    init() {
-        if let data = sectionOrderData.data(using: .utf8), let decoded = try? JSONDecoder().decode([Int].self, from: data) {
-            _sectionOrder = State(initialValue: decoded)
-        } else {
-            _sectionOrder = State(initialValue: bbsConfigFk)
-        }
-        
-        if let data = noticeCountsData.data(using: .utf8), let decoded = try? JSONDecoder().decode([Int].self, from: data) {
-            _noticeCounts = State(initialValue: decoded)
-        } else {
-            _noticeCounts = State(initialValue: [4, 4, 4, 4, 4])
-        }
-        
-        if let data = hiddenNoticesData.data(using: .utf8), let decoded = try? JSONDecoder().decode(Set<Int>.self, from: data) {
-            _hiddenNotices = State(initialValue: decoded)
-        } else {
-            _hiddenNotices = State(initialValue: [])
-        }
-    }
     
     var body: some View {
         NavigationStack {
@@ -102,9 +78,7 @@ struct Home: View {
                     }) {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                     }
-                    .sheet(isPresented: $showEditSectionsView, onDismiss: {
-                        saveSettings()
-                    }) {
+                    .sheet(isPresented: $showEditSectionsView) {
                         EditSectionsView(
                             sectionOrder: $sectionOrder,
                             noticeCounts: $noticeCounts,
@@ -123,15 +97,6 @@ struct Home: View {
             .navigationDestination(isPresented: $openNoticePage) {
                 NoticeContentView(pkId: notificationPkId)
             }
-        }
-        .onChange(of: sectionOrder) { newValue, _ in
-            saveSettings()
-        }
-        .onChange(of: noticeCounts) { newValue, _ in
-            saveSettings()
-        }
-        .onChange(of: hiddenNotices) { newValue, _ in
-            saveSettings()
         }
         .onChange(of: showEditSectionsView) { newValue, _ in
             if newValue {
@@ -237,18 +202,6 @@ struct Home: View {
             }
         }
     }
-    
-    func saveSettings() {
-        if let encodedOrder = try? JSONEncoder().encode(sectionOrder) {
-            sectionOrderData = String(data: encodedOrder, encoding: .utf8) ?? ""
-        }
-        if let encodedCounts = try? JSONEncoder().encode(noticeCounts) {
-            noticeCountsData = String(data: encodedCounts, encoding: .utf8) ?? "[4, 4, 4, 4, 4]"
-        }
-        if let encodedHidden = try? JSONEncoder().encode(hiddenNotices) {
-            hiddenNoticesData = String(data: encodedHidden, encoding: .utf8) ?? "[]"
-        }
-    }
 }
 
 struct NoticeRow: View {
@@ -283,7 +236,7 @@ struct NoticeRow: View {
 struct EditSectionsView: View {
     @Binding var sectionOrder: [Int]
     @Binding var noticeCounts: [Int]
-    @Binding var hiddenNotices: Set<Int>
+    @Binding var hiddenNotices: [Int]
     let noticeNames: [String]
     let bbsConfigFk: [Int]
     @Environment(\.dismiss) var dismiss
@@ -300,7 +253,7 @@ struct EditSectionsView: View {
                                 Text(noticeNames[bbsConfigFk.firstIndex(of: section)!])
                                 Spacer()
                                 Button(action: {
-                                    hiddenNotices.insert(section)
+                                    hiddenNotices.append(section)
                                 }) {
                                     Text("숨김")
                                 }.padding(.trailing, 20)
@@ -332,7 +285,9 @@ struct EditSectionsView: View {
                                 Text(noticeNames[bbsConfigFk.firstIndex(of: section)!])
                                 Spacer()
                                 Button(action: {
-                                    hiddenNotices.remove(section)
+                                    if let index = hiddenNotices.firstIndex(of: section) {
+                                        hiddenNotices.remove(at: index)
+                                    }
                                 }) {
                                     Text("표시")
                                 }

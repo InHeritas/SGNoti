@@ -13,8 +13,6 @@ import FirebaseMessaging
 
 struct Setting: View {
     @AppStorage("foldFileLise") private var foldFileList: Bool = true
-    @AppStorage("subscribedBoards") private var subscribedBoards: [Int] = [1, 2, 3, 141]
-    @AppStorage("subscribedKeywords") private var subscribedKeywords: [String] = []
     
     @State private var totalSize: Int64 = 0
     
