@@ -28,6 +28,9 @@
 		609A2C4E2C63B8590060392E /* NoticeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609A2C4D2C63B8590060392E /* NoticeList.swift */; };
 		609A2C502C63CBF40060392E /* NoticeDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609A2C4F2C63CBF40060392E /* NoticeDetail.swift */; };
 		609A2C522C63CC0C0060392E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 609A2C512C63CC0C0060392E /* WebView.swift */; };
+		60C827E92C74A0C6004EC628 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827E82C74A0C6004EC628 /* NotificationHandler.swift */; };
+		60C827EC2C74A0E8004EC628 /* NotificationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827EB2C74A0E8004EC628 /* NotificationViewModifier.swift */; };
+		60C827EE2C74A0FE004EC628 /* View+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827ED2C74A0FE004EC628 /* View+Notifications.swift */; };
 		60CA44D52C6A6244009CF1BC /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 60CA44D42C6A6244009CF1BC /* SwiftSoup */; };
 		60CA44D72C6A6334009CF1BC /* LibraryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44D62C6A6334009CF1BC /* LibraryList.swift */; };
 		60CA44DD2C6A6502009CF1BC /* LibraryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44DC2C6A6502009CF1BC /* LibraryListView.swift */; };
@@ -73,6 +76,9 @@
 		609A2C4F2C63CBF40060392E /* NoticeDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetail.swift; sourceTree = "<group>"; };
 		609A2C512C63CC0C0060392E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		60BA0C192C6EEBAF00798958 /* SGNoti.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SGNoti.entitlements; sourceTree = "<group>"; };
+		60C827E82C74A0C6004EC628 /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
+		60C827EB2C74A0E8004EC628 /* NotificationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModifier.swift; sourceTree = "<group>"; };
+		60C827ED2C74A0FE004EC628 /* View+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Notifications.swift"; sourceTree = "<group>"; };
 		60CA44D62C6A6334009CF1BC /* LibraryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryList.swift; sourceTree = "<group>"; };
 		60CA44DC2C6A6502009CF1BC /* LibraryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListView.swift; sourceTree = "<group>"; };
 		60CA44DE2C6A6F2D009CF1BC /* LibraryContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryContentView.swift; sourceTree = "<group>"; };
@@ -153,6 +159,7 @@
 			children = (
 				60BA0C192C6EEBAF00798958 /* SGNoti.entitlements */,
 				609A2C2F2C63A2FA0060392E /* SGNotiApp.swift */,
+				60C827EA2C74A0D0004EC628 /* Notification */,
 				609A2C472C63AA3B0060392E /* MainTabView.swift */,
 				609A2C492C63AABA0060392E /* Home.swift */,
 				60CA44E42C6A7905009CF1BC /* Library.swift */,
@@ -180,6 +187,16 @@
 				609A2C362C63A2FB0060392E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		60C827EA2C74A0D0004EC628 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				60C827E82C74A0C6004EC628 /* NotificationHandler.swift */,
+				60C827EB2C74A0E8004EC628 /* NotificationViewModifier.swift */,
+				60C827ED2C74A0FE004EC628 /* View+Notifications.swift */,
+			);
+			path = Notification;
 			sourceTree = "<group>";
 		};
 		60CA44D82C6A64C4009CF1BC /* ListView */ = {
@@ -322,10 +339,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				609A2C4E2C63B8590060392E /* NoticeList.swift in Sources */,
+				60C827E92C74A0C6004EC628 /* NotificationHandler.swift in Sources */,
 				600DB68D2C6507070028A07C /* ShareSheet.swift in Sources */,
 				60CA44E72C6B8E7E009CF1BC /* ContentView.swift in Sources */,
 				60F870C62C666B6E002F2950 /* OSSView.swift in Sources */,
 				600DB6842C64CF280028A07C /* SFSafariView.swift in Sources */,
+				60C827EC2C74A0E8004EC628 /* NotificationViewModifier.swift in Sources */,
 				609A2C4C2C63B7910060392E /* NoticeContentView.swift in Sources */,
 				609A2C502C63CBF40060392E /* NoticeDetail.swift in Sources */,
 				609A2C442C63A4D90060392E /* Settings.swift in Sources */,
@@ -341,6 +360,7 @@
 				600DB68B2C64E9A20028A07C /* Bookmark_SwiftData.swift in Sources */,
 				60CA44D72C6A6334009CF1BC /* LibraryList.swift in Sources */,
 				609A2C482C63AA3B0060392E /* MainTabView.swift in Sources */,
+				60C827EE2C74A0FE004EC628 /* View+Notifications.swift in Sources */,
 				604CE8EC2C722C6C00420F0D /* Notification.swift in Sources */,
 				600DB6872C64DB8D0028A07C /* LabeledStepper.swift in Sources */,
 				60CA44E12C6A735D009CF1BC /* LibraryDetail.swift in Sources */,

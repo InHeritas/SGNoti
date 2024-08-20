@@ -10,6 +10,8 @@ import SwiftData
 import FirebaseCore
 import FirebaseMessaging
 import FirebaseFirestore
+import UserNotifications
+import OSLog
 
 @main
 struct SGNotiApp: App {
@@ -68,6 +70,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
     // 포그라운드 상태에서 푸시 알림 수신 시 호출
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .badge, .sound])
+    }
+    
+    // 포그라운드가 아닌 상태에서 푸시 알림을 탭했을 때 호출되는 메서드
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        NotificationHandler.shared.handle(response: response)
+        completionHandler()
     }
     
     // Firestore에서 유저 데이터를 확인하고 로컬에 저장하는 함수

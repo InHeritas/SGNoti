@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Alamofire
+import UserNotifications
 
 struct Home: View {
     @AppStorage("sectionOrderData") private var sectionOrderData: String = ""
@@ -19,8 +20,10 @@ struct Home: View {
     @State private var onestopNotices: [NoticeData] = []
     @State private var eventNotices: [NoticeData] = []
     @State private var isLoading: Bool = true
-    @State private var showSafariView = false
-    @State private var showEditSectionsView = false
+    @State private var showSafariView: Bool = false
+    @State private var showEditSectionsView: Bool = false
+    @State private var openNoticePage: Bool = false
+    @State private var notificationPkId: Int = 0
     
     @State private var noticeName: [String] = ["학사공지", "일반공지", "장학공지", "종합봉사실", "행사특강"]
     @State private var bbsConfigFk: [Int] = [2, 1, 141, 3, 142]
@@ -117,6 +120,9 @@ struct Home: View {
                     await fetchAllNotices()
                 }
             }
+            .navigationDestination(isPresented: $openNoticePage) {
+                NoticeContentView(pkId: notificationPkId)
+            }
         }
         .onChange(of: sectionOrder) { newValue, _ in
             saveSettings()
@@ -133,6 +139,26 @@ struct Home: View {
                     await fetchAllNotices()
                 }
             }
+        }
+        .onNotification { response in
+            let userInfo = response.notification.request.content.userInfo
+            if let urlString = userInfo["url"] as? String,
+               let url = URL(string: urlString) {
+                handleURL(url)
+            }
+        }
+    }
+    
+    private func handleURL(_ url: URL) {
+        guard url.scheme == "sgnoti" else { return }
+        guard url.host == "notices" else { return }
+        
+        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let pkIdQueryItem = components.queryItems?.first(where: { $0.name == "pkId" }),
+           let pkIdString = pkIdQueryItem.value,
+           let pkIdInt = Int(pkIdString) {
+            notificationPkId = pkIdInt
+            openNoticePage = true
         }
     }
     
