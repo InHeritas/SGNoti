@@ -133,6 +133,7 @@
 			children = (
 				609A2C432C63A4D90060392E /* Settings.swift */,
 				604CE8EB2C722C6C00420F0D /* Notification.swift */,
+				60F870C52C666B6E002F2950 /* OSSView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -168,7 +169,6 @@
 				60CA44D92C6A64CF009CF1BC /* ContentView */,
 				60CA44E82C6BB28C009CF1BC /* Bookmark */,
 				604CE8EA2C722C5200420F0D /* Settings */,
-				60F870C52C666B6E002F2950 /* OSSView.swift */,
 				60F870C32C666A0B002F2950 /* Model */,
 				60F870C42C666A1C002F2950 /* Web */,
 				600DB6912C652EAD0028A07C /* Extensions.swift */,
