@@ -248,8 +248,8 @@ struct NoticeContentView: View {
             return
         }
         
-        let documentInteractionController = UIDocumentInteractionController(url: fileURL)
-        documentInteractionController.presentOptionsMenu(from: .zero, in: rootViewController.view, animated: true)
+        let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+        rootViewController.present(activityViewController, animated: true, completion: nil)
     }
     
     func checkIfBookmarked() {
