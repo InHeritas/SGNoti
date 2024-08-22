@@ -132,7 +132,9 @@ struct Home: View {
             if let components = URLComponents(url: inputURL, resolvingAgainstBaseURL: false),
                let settingQueryItem = components.queryItems?.first(where: { $0.name == "setting" }),
                let settingString = settingQueryItem.value {
-                openSettingPage = true
+                if settingString == "notification" {
+                    openSettingPage = true
+                }
             }
         }
     }
