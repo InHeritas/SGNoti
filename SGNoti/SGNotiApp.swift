@@ -95,11 +95,27 @@ class AppDelegate: NSObject, UIApplicationDelegate, MessagingDelegate, UNUserNot
                 
                 UserDefaults.standard.set(subscribedBoards, forKey: "subscribedBoards")
                 UserDefaults.standard.set(keywords, forKey: "subscribedKeywords")
+                
+                // fcmToken과 lastUpdated 필드 업데이트
+                let currentTime = Timestamp()
+                userRef.updateData([
+                    "fcmToken": fcmToken,
+                    "lastUpdated": currentTime
+                ]) { error in
+                    if let error = error {
+                        print("Error updating user settings: \(error)")
+                    } else {
+                        print("User settings updated successfully")
+                    }
+                }
+                
             } else {
+                let currentTime = Timestamp()
                 db.collection("users").document(userId).setData([
                     "fcmToken": fcmToken,
                     "subscribedBoards": subscribedBoards,
-                    "keywords": subscribedKeywords
+                    "keywords": subscribedKeywords,
+                    "lastUpdated": currentTime
                 ], merge: true) { error in
                     if let error = error {
                         print("Error saving user settings: \(error)")
