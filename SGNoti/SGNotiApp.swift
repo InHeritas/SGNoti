@@ -6,17 +6,21 @@
 //
 
 import SwiftUI
+import TipKit
 import SwiftData
 import FirebaseCore
 import FirebaseMessaging
 import FirebaseFirestore
 import UserNotifications
-import OSLog
 
 @main
 struct SGNotiApp: App {
     @Environment(\.scenePhase) var scenePhase
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    init() {
+        try? Tips.configure()
+    }
     
     var body: some Scene {
         WindowGroup {

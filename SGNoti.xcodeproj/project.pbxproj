@@ -39,6 +39,7 @@
 		60CA44E32C6A76C5009CF1BC /* WebView_Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E22C6A76C5009CF1BC /* WebView_Library.swift */; };
 		60CA44E52C6A7905009CF1BC /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E42C6A7905009CF1BC /* Library.swift */; };
 		60CA44E72C6B8E7E009CF1BC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E62C6B8E7E009CF1BC /* ContentView.swift */; };
+		60E6EB302C775B8500DF3B48 /* TipKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E6EB2F2C775B8500DF3B48 /* TipKit.swift */; };
 		60F3D7EE2C6F82D40083BE7B /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 60F3D7ED2C6F82D40083BE7B /* FirebaseAnalytics */; };
 		60F3D7F02C6F82D40083BE7B /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 60F3D7EF2C6F82D40083BE7B /* FirebaseAppCheck */; };
 		60F3D7F22C6F82D40083BE7B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 60F3D7F12C6F82D40083BE7B /* FirebaseAuth */; };
@@ -86,6 +87,7 @@
 		60CA44E22C6A76C5009CF1BC /* WebView_Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView_Library.swift; sourceTree = "<group>"; };
 		60CA44E42C6A7905009CF1BC /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		60CA44E62C6B8E7E009CF1BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		60E6EB2F2C775B8500DF3B48 /* TipKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipKit.swift; sourceTree = "<group>"; };
 		60F3D7FF2C6F8B5E0083BE7B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		60F870C52C666B6E002F2950 /* OSSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSSView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +165,7 @@
 				60C827EA2C74A0D0004EC628 /* Notification */,
 				609A2C472C63AA3B0060392E /* MainTabView.swift */,
 				609A2C492C63AABA0060392E /* Home.swift */,
+				60E6EB2F2C775B8500DF3B48 /* TipKit.swift */,
 				60CA44E42C6A7905009CF1BC /* Library.swift */,
 				609357422C6DACCE00D421D1 /* TotalSearch.swift */,
 				60CA44D82C6A64C4009CF1BC /* ListView */,
@@ -338,6 +341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60E6EB302C775B8500DF3B48 /* TipKit.swift in Sources */,
 				609A2C4E2C63B8590060392E /* NoticeList.swift in Sources */,
 				60C827E92C74A0C6004EC628 /* NotificationHandler.swift in Sources */,
 				600DB68D2C6507070028A07C /* ShareSheet.swift in Sources */,
@@ -499,7 +503,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SGNoti/SGNoti.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240822001;
+				CURRENT_PROJECT_VERSION = 240822003;
 				DEVELOPMENT_ASSET_PATHS = "\"SGNoti/Preview Content\"";
 				DEVELOPMENT_TEAM = 7D3VAQXYHT;
 				ENABLE_PREVIEWS = YES;
@@ -540,7 +544,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SGNoti/SGNoti.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240822001;
+				CURRENT_PROJECT_VERSION = 240822003;
 				DEVELOPMENT_ASSET_PATHS = "\"SGNoti/Preview Content\"";
 				DEVELOPMENT_TEAM = 7D3VAQXYHT;
 				ENABLE_PREVIEWS = YES;

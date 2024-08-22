@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 import Alamofire
 import UserNotifications
 
@@ -23,6 +24,7 @@ struct Home: View {
     @State private var showSafariView: Bool = false
     @State private var showEditSectionsView: Bool = false
     @State private var openNoticePage: Bool = false
+    @State private var openSettingPage: Bool = false
     @State private var notificationPkId: Int = 0
     
     @State private var noticeName: [String] = ["학사공지", "일반공지", "장학공지", "종합봉사실", "행사특강"]
@@ -30,10 +32,18 @@ struct Home: View {
     
     var body: some View {
         NavigationStack {
-            Group {
+            VStack {
                 if isLoading {
                     ProgressView()
                 } else {
+                    TipView(NotificationTip()) { action in
+                        if action.id == "goToSetting" {
+                            UIApplication.shared.open(URL(string: "sgnoti://view?setting=notification")!)
+                            NotificationTip().invalidate(reason: .actionPerformed)
+                        }
+                    }
+                    .tipImageSize(CGSize(width: 30, height: 30))
+                    .padding()
                     List {
                         ForEach(sectionOrder, id: \.self) { section in
                             if !hiddenNotices.contains(section) {
@@ -97,6 +107,9 @@ struct Home: View {
             .navigationDestination(isPresented: $openNoticePage) {
                 NoticeContentView(pkId: notificationPkId)
             }
+            .navigationDestination(isPresented: $openSettingPage) {
+                Notification()
+            }
         }
         .onChange(of: showEditSectionsView) { newValue, _ in
             if newValue {
@@ -110,6 +123,16 @@ struct Home: View {
             if let urlString = userInfo["url"] as? String,
                let url = URL(string: urlString) {
                 handleURL(url)
+            }
+        }
+        .onOpenURL { inputURL in
+            guard inputURL.scheme == "sgnoti" else { return }
+            guard inputURL.host == "view" else { return }
+            
+            if let components = URLComponents(url: inputURL, resolvingAgainstBaseURL: false),
+               let settingQueryItem = components.queryItems?.first(where: { $0.name == "setting" }),
+               let settingString = settingQueryItem.value {
+                openSettingPage = true
             }
         }
     }
