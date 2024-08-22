@@ -42,7 +42,14 @@ struct Setting: View {
                     }
                 }
                 Section(header: Text("지원")) {
-                    Button(action: { openURLInSafari(urlString: "https://www.inheritas.dev") }) {
+                    Button(action: {  }) {
+                        HStack {
+                            Text("support@inheritas.dev")
+                            Spacer()
+                            Image(systemName: "envelope")
+                        }
+                    }.buttonStyle(PlainButtonStyle())
+                    Button(action: { openURLInSafari(urlString: "https://www.inheritas.dev/sgnoti") }) {
                         HStack {
                             Text("개발자 웹사이트")
                             Spacer()
