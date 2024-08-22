@@ -96,6 +96,7 @@ struct LibraryContentView: View {
                             WebView_Library(url: URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
                                 .frame(height: webViewContentHeight)
                             if isPageLoading {
+                                Color.white
                                 VStack {
                                     Spacer().frame(height: 200)
                                     ProgressView()

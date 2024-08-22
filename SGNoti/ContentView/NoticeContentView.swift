@@ -103,6 +103,7 @@ struct NoticeContentView: View {
                             WebView(url: URL(string: "https://www.sogang.ac.kr/ko/detail/\(pkId)")!, content: content, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
                                 .frame(height: webViewContentHeight)
                             if isPageLoading {
+                                Color.white
                                 VStack {
                                     Spacer().frame(height: 200)
                                     ProgressView()

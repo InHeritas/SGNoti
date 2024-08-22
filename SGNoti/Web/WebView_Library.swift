@@ -18,19 +18,21 @@ struct WebView_Library: UIViewRepresentable {
         let webView = WKWebView()
         webView.navigationDelegate = context.coordinator
         webView.scrollView.bounces = false
+        
         #if DEBUG
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
         #endif
+        
+        let request = URLRequest(url: url)
+        webView.load(request)
+        
         return webView
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        if !context.coordinator.isWebViewLoaded {
-            let request = URLRequest(url: url)
-            uiView.load(request)
-        }
+        
     }
     
     func replaceContent(_ webView: WKWebView) {
@@ -86,10 +88,8 @@ struct WebView_Library: UIViewRepresentable {
         }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            if !isWebViewLoaded {
-                isWebViewLoaded = true
-                parent.replaceContent(webView)
-            }
+            isWebViewLoaded = true
+            parent.replaceContent(webView)
         }
         
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {

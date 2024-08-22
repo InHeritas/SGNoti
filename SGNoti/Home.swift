@@ -44,7 +44,7 @@ struct Home: View {
                                     NavigationLink(destination: NoticeListView(bbsConfigFk: section)) {
                                         HStack {
                                             Image(systemName: "plus")
-                                            Text("전체글 보기")
+                                            Text("더보기")
                                         }
                                     }
                                 }

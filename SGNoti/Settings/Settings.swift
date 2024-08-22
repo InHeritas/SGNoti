@@ -55,9 +55,9 @@ struct Setting: View {
                         Text("오픈소스 라이선스")
                     }
                     HStack {
-                        Text("현재 버전")
+                        Text("버전 정보")
                         Spacer()
-                        Text(versionNumber())
+                        Text("\(versionNumber()) (\(buildNumber()))")
                     }
                 }
             }
@@ -77,6 +77,15 @@ struct Setting: View {
     
     func versionNumber() -> String {
         let versionNumber = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        if let versionNumber = versionNumber {
+            return "\(versionNumber)"
+        } else {
+            return ""
+        }
+    }
+    
+    func buildNumber() -> String {
+        let versionNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         if let versionNumber = versionNumber {
             return "\(versionNumber)"
         } else {
