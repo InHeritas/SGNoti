@@ -86,7 +86,7 @@ struct OSSView: View {
                 HStack {
                     Text("Firebase-iOS-SDK")
                     Spacer()
-                    Text("11.0.0")
+                    Text("10.29.0")
                 }
                 DisclosureGroup(isExpanded: $isFirebaseExpanded) {
                     Text("""
