@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct Style {
-
     public init(
         height: Double = 34.0,
         labelWidth: Double = 48.0,

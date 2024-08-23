@@ -1,5 +1,5 @@
 //
-//  BoardList.swift
+//  Library.swift
 //  SGNoti
 //
 //  Created by InHeritas on 8/13/24.

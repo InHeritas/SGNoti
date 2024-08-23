@@ -5,9 +5,9 @@
 //  Created by InHeritas on 8/13/24.
 //
 
-import SwiftUI
 import Alamofire
 import SwiftSoup
+import SwiftUI
 
 struct LibraryListView: View {
     let libraryCode: Int
@@ -21,14 +21,14 @@ struct LibraryListView: View {
     @State private var searchPopup: Bool = false
     @State private var searching: Bool = false
     @State private var isLoadMore: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 if pageNum == 1 && isLoading {
                     ProgressView()
                 } else {
-                    ListView_Library(libraryCode: libraryCode,notices: $notices, pageNum: $pageNum, searching: $searching, isLoading: $isLoading, isLoadMore: $isLoadMore, totalCount: $totalCount)
+                    LibraryList(libraryCode: libraryCode, notices: $notices, pageNum: $pageNum, searching: $searching, isLoading: $isLoading, isLoadMore: $isLoadMore, totalCount: $totalCount)
                 }
             }
             .navigationTitle(libraryCode == 1 ? "로욜라 도서관" : "법학전문도서관")
@@ -56,7 +56,7 @@ struct LibraryListView: View {
             }
         }
     }
-    
+
     func loadMore() {
         guard notices.count < totalCount else {
             isLoadMore = false
@@ -65,33 +65,33 @@ struct LibraryListView: View {
         isLoading = true
         fetchLibraryNotices()
     }
-    
+
     func fetchLibraryNotices() {
-        var searchParam: String = ""
+        var searchParam = ""
         if !searchText.isEmpty {
             searchParam = "&searchKind=title&searchKey=\(searchText)"
         } else {
             searchParam = ""
         }
-        
+
         let url = "https://library.sogang.ac.kr/bbs/list/\(libraryCode)?pn=\(pageNum)\(searchParam)&countPerPage=20"
-        
+
         AF.request(url).responseString { response in
             DispatchQueue.main.async {
                 switch response.result {
-                case .success(let html):
+                case let .success(html):
                     do {
                         let document = try SwiftSoup.parse(html)
-                        
+
                         if let totalString = try document.select("#divContent > div.listInfo > div.listInfo1 > p.totalCnt > span").first()?.text(),
                            let total = Int(totalString) {
                             self.totalCount = total
                         }
-                        
+
                         let rows = try document.select("#divContent > form > div > table > tbody > tr")
-                        
+
                         var fetchedNotices: [LibraryNoticeData] = []
-                        
+
                         for row in rows {
                             let isAlways = row.hasClass("always")
                             let title = try row.select("td.title a").text()
@@ -104,23 +104,23 @@ struct LibraryListView: View {
                             } else {
                                 pkId = 57145
                             }
-                            
+
                             let notice = LibraryNoticeData(isAlways: isAlways, title: title, writer: writer, reportDate: reportDate, pkId: pkId)
                             fetchedNotices.append(notice)
                         }
-                        
+
                         self.notices.append(contentsOf: fetchedNotices)
-                        
+
                         if self.notices.count < self.totalCount {
                             self.pageNum += 1
                         }
-                        
+
                         self.isLoading = false
                     } catch {
                         print("Error parsing HTML: \(error)")
                         self.isLoading = false
                     }
-                case .failure(let error):
+                case let .failure(error):
                     print("Error fetching HTML: \(error)")
                     self.isLoading = false
                 }
@@ -129,7 +129,7 @@ struct LibraryListView: View {
     }
 }
 
-struct ListView_Library: View {
+struct LibraryList: View {
     let libraryCode: Int
     @Environment(\.isSearching) private var isSearching
     @Binding var notices: [LibraryNoticeData]
@@ -138,7 +138,7 @@ struct ListView_Library: View {
     @Binding var isLoading: Bool
     @Binding var isLoadMore: Bool
     @Binding var totalCount: Int
-    
+
     var body: some View {
         List {
             ForEach(notices) { notice in

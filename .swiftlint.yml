@@ -1,0 +1,15 @@
+disabled_rules:
+    - type_body_length
+    
+trailing_whitespace:
+  severity: warning  # 또는 error로 변경 가능
+  ignores_empty_lines: true  # 빈 줄의 공백은 무시하도록 설정
+  ignores_comments: true  # 주석 안의 공백은 무시하도록 설정
+
+identifier_name:
+  excluded:
+    - db
+    - id
+    
+line_length:
+  warning: 200

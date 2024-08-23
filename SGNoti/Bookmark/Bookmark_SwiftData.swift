@@ -8,14 +8,14 @@
 import SwiftData
 
 @Model
-class Bookmark_NoticeDetail {
+class BookmarkedNoticeDetail {
     var pkId: Int
     var title: String
     var regDate: String
     var userName: String
     var content: String
     var tags: [String]
-    
+
     init(pkId: Int, title: String, regDate: String, userName: String, content: String, tags: [String]) {
         self.pkId = pkId
         self.title = title

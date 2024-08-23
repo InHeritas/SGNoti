@@ -10,11 +10,11 @@ import SwiftUI
 
 struct NotificationViewModifier: ViewModifier {
     private let onNotification: (UNNotificationResponse) -> Void
-    
-    init(onNotification: @escaping (UNNotificationResponse) -> Void, handler: NotificationHandler) {
+
+    init(onNotification: @escaping (UNNotificationResponse) -> Void, handler _: NotificationHandler) {
         self.onNotification = onNotification
     }
-    
+
     func body(content: Content) -> some View {
         content
             .onReceive(NotificationHandler.shared.$latestNotification) { response in

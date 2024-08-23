@@ -5,17 +5,17 @@
 //  Created by InHeritas on 8/7/24.
 //
 
-import SwiftUI
-import SwiftData
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseMessaging
+import SwiftData
+import SwiftUI
 
 struct Setting: View {
     @AppStorage("foldFileLise") private var foldFileList: Bool = true
-    
+
     @State private var totalSize: Int64 = 0
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -42,20 +42,22 @@ struct Setting: View {
                     }
                 }
                 Section(header: Text("지원")) {
-                    Button(action: {  }) {
+                    Button(action: {}, label: {
                         HStack {
                             Text("support@inheritas.dev")
                             Spacer()
                             Image(systemName: "envelope")
                         }
-                    }.buttonStyle(PlainButtonStyle())
-                    Button(action: { openURLInSafari(urlString: "https://www.inheritas.dev/sgnoti") }) {
+                    })
+                    .buttonStyle(PlainButtonStyle())
+                    Button(action: { openURLInSafari(urlString: "https://www.inheritas.dev/sgnoti") }, label: {
                         HStack {
                             Text("개발자 웹사이트")
                             Spacer()
                             Image(systemName: "safari")
                         }
-                    }.buttonStyle(PlainButtonStyle())
+                    })
+                    .buttonStyle(PlainButtonStyle())
                 }
                 Section(header: Text("정보")) {
                     NavigationLink(destination: OSSView()) {
@@ -70,18 +72,18 @@ struct Setting: View {
             }
             .navigationTitle("설정")
             .navigationBarTitleDisplayMode(.inline)
-            .onAppear() {
+            .onAppear {
                 calculateTotalSize()
             }
         }
     }
-    
+
     func openURLInSafari(urlString: String) {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
         }
     }
-    
+
     func versionNumber() -> String {
         let versionNumber = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         if let versionNumber = versionNumber {
@@ -90,7 +92,7 @@ struct Setting: View {
             return ""
         }
     }
-    
+
     func buildNumber() -> String {
         let versionNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         if let versionNumber = versionNumber {
@@ -99,7 +101,7 @@ struct Setting: View {
             return ""
         }
     }
-    
+
     func calculateTotalSize() {
         let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())
         do {
@@ -112,7 +114,7 @@ struct Setting: View {
             print("Failed to calculate total size: \(error.localizedDescription)")
         }
     }
-    
+
     func deleteAllFiles() {
         let tempDir = URL(fileURLWithPath: NSTemporaryDirectory())
         do {
@@ -125,7 +127,7 @@ struct Setting: View {
             print("Failed to delete files: \(error.localizedDescription)")
         }
     }
-    
+
     func formatSize(size: Int64) -> String {
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useKB, .useMB, .useGB]

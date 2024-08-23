@@ -5,17 +5,17 @@
 //  Created by InHeritas on 8/18/24.
 //
 
-import SwiftUI
 import FirebaseFirestore
+import SwiftUI
 
 struct Notification: View {
     @AppStorage("subscribedBoards") private var subscribedBoards: [Int] = [1, 2, 3, 141]
     @AppStorage("subscribedKeywords") private var subscribedKeywords: [String] = []
     @State private var isNotificationEnabled: Bool = true
     @State private var keyword: String = ""
-    
+
     let boards = [1, 2, 3, 141, 142]
-    
+
     var body: some View {
         List {
             Section(footer: Text("본 알림은 실시간이 아니며 약 30분 간격으로 새로운 공지사항을 확인하여 알림을 전송합니다.")) {
@@ -57,16 +57,16 @@ struct Notification: View {
                                 UIApplication.shared.open(appSettings, options: [:], completionHandler: nil)
                             }
                         }
-                    }) {
+                    }, label: {
                         Text("앱 설정 열기")
-                    }
+                    })
                     Button(action: {
-                        checkNotificationSettings() { isEnabled in
+                        checkNotificationSettings { isEnabled in
                             isNotificationEnabled = isEnabled
                         }
-                    }) {
+                    }, label: {
                         Text("설정 새로고침")
-                    }
+                    })
                 }
             }
             Section(header: Text("새 글 알림 설정")) {
@@ -93,7 +93,7 @@ struct Notification: View {
                         .disabled(!isNotificationEnabled)
                     }
                 }
-                .onChange(of: subscribedBoards) { newValue, _ in
+                .onChange(of: subscribedBoards) { _, _ in
                     saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
                 }
             }
@@ -106,13 +106,13 @@ struct Notification: View {
                     Spacer()
                     Button(action: {
                         addKeyword()
-                    }) {
+                    }, label: {
                         Image(systemName: "plus.circle.fill")
                             .foregroundStyle(Color.green)
-                    }
+                    })
                     .disabled(!isNotificationEnabled)
                 }
-                .onChange(of: subscribedKeywords) { newValue, _ in
+                .onChange(of: subscribedKeywords) { _, _ in
                     saveUserSettings(subscribedBoards: subscribedBoards, keywords: subscribedKeywords)
                 }
                 if !subscribedKeywords.isEmpty {
@@ -122,10 +122,10 @@ struct Notification: View {
                             Spacer()
                             Button(action: {
                                 subscribedKeywords.remove(at: index)
-                            }) {
+                            }, label: {
                                 Image(systemName: "minus.circle.fill")
                                     .foregroundStyle(Color.red)
-                            }
+                            })
                         }
                     }
                 }
@@ -133,13 +133,13 @@ struct Notification: View {
         }
         .navigationTitle("알림")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear() {
-            checkNotificationSettings() { isEnabled in
+        .onAppear {
+            checkNotificationSettings { isEnabled in
                 isNotificationEnabled = isEnabled
             }
         }
     }
-    
+
     func checkNotificationSettings(completion: @escaping (Bool) -> Void) {
         let current = UNUserNotificationCenter.current()
         current.getNotificationSettings { settings in
@@ -155,30 +155,30 @@ struct Notification: View {
             }
         }
     }
-    
+
     private func addKeyword() {
         let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         let specialCharacterPattern = "^[^a-zA-Z0-9가-힣]+$"
         let numericPattern = "^[0-9]+$"
-        
+
         if !trimmedKeyword.isEmpty &&
             !subscribedKeywords.contains(trimmedKeyword) &&
             trimmedKeyword.range(of: specialCharacterPattern, options: .regularExpression) == nil &&
             trimmedKeyword.range(of: numericPattern, options: .regularExpression) == nil {
             subscribedKeywords.append(trimmedKeyword)
         }
-        
+
         keyword = ""
     }
-    
+
     func saveUserSettings(subscribedBoards: [Int], keywords: [String]) {
         guard let userId = getUserId() else {
             print("Error: Could not retrieve identifierForVendor.")
             return
         }
-        
+
         let db = Firestore.firestore()
-        
+
         // Firestore에 데이터 저장
         db.collection("users").document(userId).updateData([
             "subscribedBoards": subscribedBoards,
@@ -191,11 +191,11 @@ struct Notification: View {
             }
         }
     }
-    
+
     func getUserId() -> String? {
         return UIDevice.current.identifierForVendor?.uuidString
     }
-    
+
     func noticeTitle(_ bbsConfigFk: Int) -> String {
         if bbsConfigFk == 1 {
             return "일반공지"

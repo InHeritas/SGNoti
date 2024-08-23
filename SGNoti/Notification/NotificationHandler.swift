@@ -10,10 +10,10 @@ import UserNotifications
 
 public class NotificationHandler: ObservableObject {
     public static let shared = NotificationHandler()
-    
+
     @Published private(set) var latestNotification: UNNotificationResponse? = .none
-    
+
     public func handle(response: UNNotificationResponse) {
-        self.latestNotification = response
+        latestNotification = response
     }
 }

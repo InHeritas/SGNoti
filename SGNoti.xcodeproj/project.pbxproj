@@ -37,6 +37,8 @@
 		60AC31412C77756F00E25B53 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 60AC31402C77756F00E25B53 /* FirebasePerformance */; };
 		60AC31432C77756F00E25B53 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 60AC31422C77756F00E25B53 /* FirebaseRemoteConfig */; };
 		60AC31452C77756F00E25B53 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 60AC31442C77756F00E25B53 /* FirebaseStorage */; };
+		60AC31482C78BF4C00E25B53 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 60AC31472C78BF4C00E25B53 /* .swiftlint.yml */; };
+		60AC314B2C78C3E500E25B53 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 60AC314A2C78C3E400E25B53 /* .swiftformat */; };
 		60C827E92C74A0C6004EC628 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827E82C74A0C6004EC628 /* NotificationHandler.swift */; };
 		60C827EC2C74A0E8004EC628 /* NotificationViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827EB2C74A0E8004EC628 /* NotificationViewModifier.swift */; };
 		60C827EE2C74A0FE004EC628 /* View+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60C827ED2C74A0FE004EC628 /* View+Notifications.swift */; };
@@ -45,7 +47,7 @@
 		60CA44DD2C6A6502009CF1BC /* LibraryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44DC2C6A6502009CF1BC /* LibraryListView.swift */; };
 		60CA44DF2C6A6F2D009CF1BC /* LibraryContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44DE2C6A6F2D009CF1BC /* LibraryContentView.swift */; };
 		60CA44E12C6A735D009CF1BC /* LibraryDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E02C6A735D009CF1BC /* LibraryDetail.swift */; };
-		60CA44E32C6A76C5009CF1BC /* WebView_Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E22C6A76C5009CF1BC /* WebView_Library.swift */; };
+		60CA44E32C6A76C5009CF1BC /* LibraryWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E22C6A76C5009CF1BC /* LibraryWebView.swift */; };
 		60CA44E52C6A7905009CF1BC /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E42C6A7905009CF1BC /* Library.swift */; };
 		60CA44E72C6B8E7E009CF1BC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60CA44E62C6B8E7E009CF1BC /* ContentView.swift */; };
 		60E6EB302C775B8500DF3B48 /* TipKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60E6EB2F2C775B8500DF3B48 /* TipKit.swift */; };
@@ -76,6 +78,8 @@
 		609A2C4D2C63B8590060392E /* NoticeList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeList.swift; sourceTree = "<group>"; };
 		609A2C4F2C63CBF40060392E /* NoticeDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeDetail.swift; sourceTree = "<group>"; };
 		609A2C512C63CC0C0060392E /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		60AC31472C78BF4C00E25B53 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		60AC314A2C78C3E400E25B53 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; path = .swiftformat; sourceTree = "<group>"; };
 		60BA0C192C6EEBAF00798958 /* SGNoti.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SGNoti.entitlements; sourceTree = "<group>"; };
 		60C827E82C74A0C6004EC628 /* NotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
 		60C827EB2C74A0E8004EC628 /* NotificationViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModifier.swift; sourceTree = "<group>"; };
@@ -84,7 +88,7 @@
 		60CA44DC2C6A6502009CF1BC /* LibraryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryListView.swift; sourceTree = "<group>"; };
 		60CA44DE2C6A6F2D009CF1BC /* LibraryContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryContentView.swift; sourceTree = "<group>"; };
 		60CA44E02C6A735D009CF1BC /* LibraryDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryDetail.swift; sourceTree = "<group>"; };
-		60CA44E22C6A76C5009CF1BC /* WebView_Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView_Library.swift; sourceTree = "<group>"; };
+		60CA44E22C6A76C5009CF1BC /* LibraryWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryWebView.swift; sourceTree = "<group>"; };
 		60CA44E42C6A7905009CF1BC /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		60CA44E62C6B8E7E009CF1BC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		60E6EB2F2C775B8500DF3B48 /* TipKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipKit.swift; sourceTree = "<group>"; };
@@ -143,6 +147,8 @@
 		609A2C232C63A2FA0060392E = {
 			isa = PBXGroup;
 			children = (
+				60AC31472C78BF4C00E25B53 /* .swiftlint.yml */,
+				60AC314A2C78C3E400E25B53 /* .swiftformat */,
 				609A2C2E2C63A2FA0060392E /* SGNoti */,
 				609A2C2D2C63A2FA0060392E /* Products */,
 				601499842C6F784100528FDC /* Frameworks */,
@@ -247,7 +253,7 @@
 			children = (
 				600DB6832C64CF280028A07C /* SFSafariView.swift */,
 				609A2C512C63CC0C0060392E /* WebView.swift */,
-				60CA44E22C6A76C5009CF1BC /* WebView_Library.swift */,
+				60CA44E22C6A76C5009CF1BC /* LibraryWebView.swift */,
 			);
 			path = Web;
 			sourceTree = "<group>";
@@ -259,6 +265,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 609A2C3A2C63A2FB0060392E /* Build configuration list for PBXNativeTarget "SGNoti" */;
 			buildPhases = (
+				60AC31492C78C24A00E25B53 /* SwiftFormat */,
+				60AC31462C78B98100E25B53 /* SwiftLint */,
 				609A2C282C63A2FA0060392E /* Sources */,
 				609A2C292C63A2FA0060392E /* Frameworks */,
 				609A2C2A2C63A2FA0060392E /* Resources */,
@@ -328,6 +336,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60AC314B2C78C3E500E25B53 /* .swiftformat in Resources */,
+				60AC31482C78BF4C00E25B53 /* .swiftlint.yml in Resources */,
 				609A2C372C63A2FB0060392E /* Preview Assets.xcassets in Resources */,
 				609A2C342C63A2FB0060392E /* Assets.xcassets in Resources */,
 				60F3D8002C6F8B5E0083BE7B /* GoogleService-Info.plist in Resources */,
@@ -335,6 +345,47 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		60AC31462C78B98100E25B53 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+		};
+		60AC31492C78C24A00E25B53 /* SwiftFormat */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftFormat;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftformat > /dev/null; then\n  swiftformat . --swiftversion 5\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		609A2C282C63A2FA0060392E /* Sources */ = {
@@ -369,7 +420,7 @@
 				600DB6872C64DB8D0028A07C /* LabeledStepper.swift in Sources */,
 				60CA44E12C6A735D009CF1BC /* LibraryDetail.swift in Sources */,
 				609357432C6DACCE00D421D1 /* TotalSearch.swift in Sources */,
-				60CA44E32C6A76C5009CF1BC /* WebView_Library.swift in Sources */,
+				60CA44E32C6A76C5009CF1BC /* LibraryWebView.swift in Sources */,
 				60CA44E52C6A7905009CF1BC /* Library.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -503,7 +554,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SGNoti/SGNoti.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240822005;
+				CURRENT_PROJECT_VERSION = 240823002;
 				DEVELOPMENT_ASSET_PATHS = "\"SGNoti/Preview Content\"";
 				DEVELOPMENT_TEAM = 7D3VAQXYHT;
 				ENABLE_PREVIEWS = YES;
@@ -545,7 +596,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SGNoti/SGNoti.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 240822005;
+				CURRENT_PROJECT_VERSION = 240823002;
 				DEVELOPMENT_ASSET_PATHS = "\"SGNoti/Preview Content\"";
 				DEVELOPMENT_TEAM = 7D3VAQXYHT;
 				ENABLE_PREVIEWS = YES;

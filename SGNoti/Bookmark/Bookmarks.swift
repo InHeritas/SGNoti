@@ -5,15 +5,15 @@
 //  Created by InHeritas on 8/7/24.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct Bookmark: View {
-    @Query private var bookmarks: [Bookmark_NoticeDetail]
+    @Query private var bookmarks: [BookmarkedNoticeDetail]
     @State private var isEditing: Bool = false
     @State private var showDeleteAllAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
-    
+
     var body: some View {
         NavigationView {
             List {
@@ -69,25 +69,25 @@ struct Bookmark: View {
             }
         }
     }
-    
+
     private func deleteItems(at offsets: IndexSet) {
         for index in offsets {
             let bookmark = bookmarks[index]
             modelContext.delete(bookmark)
         }
-        
+
         do {
             try modelContext.save()
         } catch {
             print("Failed to delete bookmark: \(error.localizedDescription)")
         }
     }
-    
+
     private func deleteAll() {
         for bookmark in bookmarks {
             modelContext.delete(bookmark)
         }
-        
+
         do {
             try modelContext.save()
         } catch {

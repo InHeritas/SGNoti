@@ -5,10 +5,10 @@
 //  Created by InHeritas on 8/13/24.
 //
 
-import SwiftUI
 import Alamofire
-import SwiftSoup
 import SwiftData
+import SwiftSoup
+import SwiftUI
 import WebKit
 
 struct LibraryContentView: View {
@@ -24,11 +24,11 @@ struct LibraryContentView: View {
     @State private var showShareSheet: Bool = false
     @State private var settingsDetent = PresentationDetent.medium
     @Environment(\.modelContext) private var modelContext
-    @Query private var bookmarks: [Bookmark_NoticeDetail]
+    @Query private var bookmarks: [BookmarkedNoticeDetail]
     @State private var showSafariView = false
-    @State private var selectedFileURL: Int? = nil
+    @State private var selectedFileURL: Int?
     @State private var isExpanded: Bool = false
-    
+
     var body: some View {
         VStack {
             if isLoading {
@@ -58,7 +58,7 @@ struct LibraryContentView: View {
                                         Button(action: {
                                             selectedFileURL = index
                                             downloadAndOpenFile(at: noticeDetail.fileUrls[index])
-                                        }) {
+                                        }, label: {
                                             HStack {
                                                 if noticeDetail.fileDownloading[index] {
                                                     ProgressView()
@@ -79,7 +79,7 @@ struct LibraryContentView: View {
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .foregroundStyle(Color("grey100"))
                                             )
-                                        }
+                                        })
                                         .padding(.top, index == 0 ? 10 : 0)
                                         .padding(.bottom, index == noticeDetail.fileUrls.count - 1 ? 10 : 0)
                                         .buttonStyle(PlainButtonStyle())
@@ -93,7 +93,7 @@ struct LibraryContentView: View {
                             Divider()
                         }
                         ZStack {
-                            WebView_Library(url: URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
+                            LibraryWebView(url: URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!, contentHeight: $webViewContentHeight, isPageLoading: $isPageLoading)
                                 .frame(height: webViewContentHeight)
                             if isPageLoading {
                                 Color.white
@@ -116,14 +116,14 @@ struct LibraryContentView: View {
                 HStack(spacing: 24) {
                     Button(action: {
                         toggleBookmark()
-                    }) {
+                    }, label: {
                         Image(systemName: isBookmarked ? "bookmark.fill" : "bookmark")
-                    }
+                    })
                     Button(action: {
                         showShareSheet.toggle()
-                    }) {
+                    }, label: {
                         Image(systemName: "square.and.arrow.up")
-                    }
+                    })
                     .sheet(isPresented: $showShareSheet) {
                         if noticeDetail != nil {
                             ShareSheet(items: [URL(string: "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)")!])
@@ -147,23 +147,23 @@ struct LibraryContentView: View {
             }
         }
     }
-    
+
     func fetchNoticeDetail() async {
         let url = "https://library.sogang.ac.kr/bbs/content/\(libraryCode)_\(pkId)"
         AF.request(url).responseString { response in
             DispatchQueue.main.async {
                 switch response.result {
-                case .success(let html):
+                case let .success(html):
                     do {
                         let document = try SwiftSoup.parse(html)
-                        
+
                         let title = try document.select("div.boardInfo p.boardInfoTitle").text()
                         var regDate = try document.select("div.boardInfo div.writeInfo").text()
                         if let range = regDate.range(of: "\\d{4}-\\d{2}-\\d{2}", options: .regularExpression) {
                             regDate = regDate[range].replacingOccurrences(of: "-", with: ".")
                         }
                         let userName = try document.select("div.boardInfo dl.writerInfo dd.writer span").text()
-                        
+
                         let files = try document.select("#divContent > div > div:nth-child(1) > div.additionalItems > div > ul > li > a")
                         var fileUrl: [String] = []
                         var fileName: [String] = []
@@ -175,7 +175,7 @@ struct LibraryContentView: View {
                                 fileDownloading.append(false)
                             }
                         }
-                        
+
                         let detail = LibraryDetail(title: title, userName: userName, regDate: regDate, fileUrls: fileUrl, fileNames: fileName, fileDownloading: fileDownloading)
                         self.noticeDetail = detail
                         self.isLoading = false
@@ -185,7 +185,7 @@ struct LibraryContentView: View {
                             self.isLoading = false
                         }
                     }
-                case .failure(let error):
+                case let .failure(error):
                     print("Error: \(error.localizedDescription)")
                     DispatchQueue.main.async {
                         self.isLoading = false
@@ -194,11 +194,11 @@ struct LibraryContentView: View {
             }
         }
     }
-    
+
     func downloadAndOpenFile(at urlString: String) {
         if let selectedFileURLIndex = selectedFileURL {
             noticeDetail?.fileDownloading[selectedFileURLIndex] = true
-            
+
             // Download file
             downloadFile(from: urlString) { url in
                 if let url = url {
@@ -218,20 +218,20 @@ struct LibraryContentView: View {
             print("파일 다운로드 실패")
         }
     }
-    
+
     func downloadFile(from url: String, completion: @escaping (URL?) -> Void) {
         AF.request(url).responseData { response in
             guard response.response != nil else {
                 completion(nil)
                 return
             }
-            
+
             if let noticeDetail = noticeDetail, let selectedFileURLIndex = selectedFileURL {
                 let fileName = noticeDetail.fileNames[selectedFileURLIndex]
-                
+
                 let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
                 let fileURL = temporaryDirectoryURL.appendingPathComponent(fileName)
-                
+
                 do {
                     try response.data?.write(to: fileURL)
                     completion(fileURL)
@@ -243,35 +243,37 @@ struct LibraryContentView: View {
             }
         }
     }
-    
+
     func openDownloadedFile(fileURL: URL) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
+              let rootViewController = windowScene.windows.first?.rootViewController
+        else {
             return
         }
-        
+
         let documentInteractionController = UIDocumentInteractionController(url: fileURL)
         documentInteractionController.delegate = rootViewController
-        
+
         // 전체 화면 미리보기
         documentInteractionController.presentPreview(animated: true)
     }
-    
+
     // HWP 파일은 미리보기로 열리지 않음
     func openDownloadedHWPFile(fileURL: URL) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let rootViewController = windowScene.windows.first?.rootViewController else {
+              let rootViewController = windowScene.windows.first?.rootViewController
+        else {
             return
         }
-        
+
         let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
         rootViewController.present(activityViewController, animated: true, completion: nil)
     }
-    
+
     func checkIfBookmarked() {
         isBookmarked = bookmarks.contains { $0.pkId == pkId }
     }
-    
+
     func toggleBookmark() {
         if isBookmarked {
             if let bookmark = bookmarks.first(where: { $0.pkId == pkId }) {
@@ -280,7 +282,7 @@ struct LibraryContentView: View {
             }
         } else {
             guard let noticeDetail = noticeDetail else { return }
-            let newBookmark = Bookmark_NoticeDetail(
+            let newBookmark = BookmarkedNoticeDetail(
                 pkId: pkId,
                 title: noticeDetail.title,
                 regDate: noticeDetail.regDate,
@@ -291,7 +293,7 @@ struct LibraryContentView: View {
             modelContext.insert(newBookmark)
             isBookmarked = true
         }
-        
+
         do {
             try modelContext.save()
         } catch {

@@ -1,19 +1,18 @@
 import SwiftUI
 
 public struct LabeledStepper: View {
-
     public init(
         _ title: String,
         description: String = "",
         value: Binding<Int>,
-        in range: ClosedRange<Int> = 0...Int.max,
+        in range: ClosedRange<Int> = 0 ... Int.max,
         longPressInterval: Double = 0.3,
         repeatOnLongPress: Bool = true,
-        style: Style = .init()
+        style _: Style = .init()
     ) {
         self.title = title
         self.description = description
-        self._value = value
+        _value = value
         self.range = range
         self.longPressInterval = longPressInterval
         self.repeatOnLongPress = repeatOnLongPress
@@ -23,7 +22,7 @@ public struct LabeledStepper: View {
 
     public var title: String = ""
     public var description: String = ""
-    public var range = 0...Int.max
+    public var range = 0 ... Int.max
     public var longPressInterval = 0.3
     public var repeatOnLongPress = true
 
@@ -33,11 +32,10 @@ public struct LabeledStepper: View {
     private var isPlusButtonDisabled: Bool { value >= range.upperBound }
     private var isMinusButtonDisabled: Bool { value <= range.lowerBound }
 
-    private func onPress(_ isPressing: Bool, operation: @escaping (inout Int, Int) -> ()) {
-
+    private func onPress(_ isPressing: Bool, operation: @escaping (inout Int, Int) -> Void) {
         guard isPressing else { timer?.invalidate(); return }
 
-        func action(_ timer: Timer?) {
+        func action(_: Timer?) {
             operation(&value, 1)
         }
 
@@ -53,7 +51,6 @@ public struct LabeledStepper: View {
     }
 
     public var body: some View {
-
         HStack {
             Text(title)
                 .foregroundColor(style.titleColor)
@@ -64,7 +61,7 @@ public struct LabeledStepper: View {
             Spacer()
 
             HStack(spacing: 0) {
-                Button() { } label: { Image(systemName: "minus")
+                Button {} label: { Image(systemName: "minus")
                     .frame(width: style.buttonWidth, height: style.height)
                     .contentShape(Rectangle())
                 }
@@ -75,8 +72,8 @@ public struct LabeledStepper: View {
                 .disabled(isMinusButtonDisabled)
                 .foregroundColor(
                     isMinusButtonDisabled
-                    ? style.inactiveButtonColor
-                    : style.activeButtonColor
+                        ? style.inactiveButtonColor
+                        : style.activeButtonColor
                 )
                 .contentShape(Rectangle())
 
@@ -90,9 +87,9 @@ public struct LabeledStepper: View {
                 Divider()
                     .padding([.top, .bottom], 8)
 
-                Button() { } label: { Image(systemName: "plus")
-                        .frame(width: style.buttonWidth, height: style.height)
-                        .contentShape(Rectangle())
+                Button {} label: { Image(systemName: "plus")
+                    .frame(width: style.buttonWidth, height: style.height)
+                    .contentShape(Rectangle())
                 }
                 .onLongPressGesture(
                     minimumDuration: 0
@@ -101,9 +98,9 @@ public struct LabeledStepper: View {
                 .disabled(isPlusButtonDisabled)
                 .foregroundColor(
                     isPlusButtonDisabled
-                    ? style.inactiveButtonColor
-                    : style.activeButtonColor
-                    )
+                        ? style.inactiveButtonColor
+                        : style.activeButtonColor
+                )
                 .contentShape(Rectangle())
             }
             .background(style.backgroundColor)

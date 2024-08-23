@@ -1,17 +1,17 @@
 //
-//  Search.swift
+//  TotalSearch.swift
 //  SGNoti
 //
 //  Created by InHeritas on 8/15/24.
 //
 
-import SwiftUI
 import Alamofire
+import SwiftUI
 
 struct TotalSearch: View {
     @State private var notices: [NoticeData] = []
     @State private var totalCount = 0
-    
+
     @State private var isLoading = false
     @State private var pageNum = 1
     @State private var showSearchBar: Bool = false
@@ -21,10 +21,10 @@ struct TotalSearch: View {
     @State private var searching: Bool = false
     @State private var isLoadMore: Bool = false
     @State private var selectedCategory: String = "전체"
-    
+
     @State private var selectedParam = "제목"
     let params = ["제목", "내용", "작성자"]
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -52,26 +52,26 @@ struct TotalSearch: View {
                     loadMore()
                 }
             }
-            .onChange(of: selectedCategory) { newValue, _ in
+            .onChange(of: selectedCategory) { _, _ in
                 notices = []
                 pageNum = 1
                 fetchNotices()
             }
         }
     }
-    
+
     func loadMore() {
         isLoading = true
         fetchNotices()
     }
-    
-    func generateCatParam(bbsConfigFk: Int, categories: [String], pkIDs: [String], selectedCategory: String) -> String {
+
+    func generateCatParam(bbsConfigFk _: Int, categories: [String], pkIDs: [String], selectedCategory: String) -> String {
         if let pkIdIndex = categories.firstIndex(of: selectedCategory), !pkIDs[pkIdIndex].isEmpty {
             return "&introPkId=\(pkIDs[pkIdIndex])"
         }
         return ""
     }
-    
+
     func generateSearchParam(selectedParam: String, searchText: String) -> String {
         switch selectedParam {
         case "제목":
@@ -84,24 +84,24 @@ struct TotalSearch: View {
             return ""
         }
     }
-    
+
     func fetchNotices() {
         // 모든 게시글을 불러온 경우 추가 요청을 막음
-        if self.notices.count >= self.totalCount && self.totalCount != 0 {
-            self.isLoading = false
+        if notices.count >= totalCount && totalCount != 0 {
+            isLoading = false
             return
         }
-        
+
         DispatchQueue.main.async {
             self.isLoading = true
         }
 
         let defaultParam = "&searchOption=title&dateOption=all&sortBy=date"
         let url = "https://www.sogang.ac.kr/api/api/v1/mainKo/BbsData/findAllSearch?pageNum=\(pageNum)&pageSize=15&keyword=\(searchText)\(defaultParam)"
-        
+
         AF.request(url, method: .get).responseDecodable(of: APIResponse.self) { response in
             switch response.result {
-            case .success(let apiResponse):
+            case let .success(apiResponse):
                 if apiResponse.statusCode == 200 {
                     DispatchQueue.main.async {
                         self.totalCount = apiResponse.data.total // 전체 게시글 수 저장
@@ -116,7 +116,7 @@ struct TotalSearch: View {
                         self.isLoading = false
                     }
                 }
-            case .failure(let error):
+            case let .failure(error):
                 print("Error: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     self.isLoading = false
@@ -134,7 +134,7 @@ struct TotalSearchListView: View {
     @Binding var isLoading: Bool
     @Binding var isLoadMore: Bool
     let configPkidSet: Set<String> = ["1", "2", "3", "141", "142"]
-    
+
     var body: some View {
         List {
             ForEach(filteredNotices(notices)) { notice in
@@ -187,9 +187,9 @@ struct TotalSearchListView: View {
             }
         }
     }
-    
+
     func filteredNotices(_ notices: [NoticeData]) -> [NoticeData] {
-        return notices.filter { configPkidSet.contains($0.config_pkid ?? "") }
+        return notices.filter { configPkidSet.contains($0.configPkid ?? "") }
     }
 }
 

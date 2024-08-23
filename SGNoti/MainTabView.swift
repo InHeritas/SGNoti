@@ -5,8 +5,8 @@
 //  Created by InHeritas on 8/7/24.
 //
 
-import SwiftUI
 import FirebaseFirestore
+import SwiftUI
 
 struct MainTabView: View {
     var body: some View {
@@ -32,7 +32,7 @@ struct MainTabView: View {
                 Text("설정")
             }
         }
-    } 
+    }
 }
 
 #Preview {
