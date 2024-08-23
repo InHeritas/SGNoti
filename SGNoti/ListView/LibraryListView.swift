@@ -22,6 +22,11 @@ struct LibraryListView: View {
     @State private var searching: Bool = false
     @State private var isLoadMore: Bool = false
 
+    @State private var selectedScope: SearchScope = .title
+    enum SearchScope {
+        case title, content, username
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,6 +43,11 @@ struct LibraryListView: View {
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "검색어를 입력하세요"
             )
+            .searchScopes($selectedScope, activation: .onSearchPresentation) {
+                Text("제목").tag(SearchScope.title)
+                Text("내용").tag(SearchScope.content)
+                Text("작성자").tag(SearchScope.username)
+            }
             .onSubmit(of: .search) {
                 notices = []
                 pageNum = 1
@@ -47,6 +57,21 @@ struct LibraryListView: View {
                 if !newValue {
                     isLoadMore = false
                     loadMore()
+                }
+            }
+            .onChange(of: selectedScope) { _, _ in
+                if !searchText.isEmpty {
+                    notices = []
+                    pageNum = 1
+                    fetchLibraryNotices()
+                }
+            }
+            .onChange(of: searching) { _, newValue in
+                if !newValue {
+                    selectedScope = .title
+                    notices = []
+                    pageNum = 1
+                    fetchLibraryNotices()
                 }
             }
             .onAppear {
@@ -66,15 +91,24 @@ struct LibraryListView: View {
         fetchLibraryNotices()
     }
 
-    func fetchLibraryNotices() {
-        var searchParam = ""
-        if !searchText.isEmpty {
-            searchParam = "&searchKind=title&searchKey=\(searchText)"
-        } else {
-            searchParam = ""
+    func generateSearchParam(selectedScope _: SearchScope, searchText: String) -> String {
+        switch selectedScope {
+        case .title:
+            return "&searchKind=title&searchKey=\(searchText)"
+        case .content:
+            return "&searchKind=content&searchKey=\(searchText)"
+        case .username:
+            return "&searchKind=writer_Name&searchKey=\(searchText)"
         }
+    }
 
+    func fetchLibraryNotices() {
+        let searchParam = generateSearchParam(selectedScope: selectedScope, searchText: searchText)
         let url = "https://library.sogang.ac.kr/bbs/list/\(libraryCode)?pn=\(pageNum)\(searchParam)&countPerPage=20"
+
+        DispatchQueue.main.async {
+            self.isLoading = true
+        }
 
         AF.request(url).responseString { response in
             DispatchQueue.main.async {
@@ -191,12 +225,8 @@ struct LibraryList: View {
             pageNum = 1
             isLoadMore = true
         }
-        .onChange(of: isSearching) { newValue, _ in
-            if newValue {
-                notices = []
-                pageNum = 1
-                isLoadMore = true
-            }
+        .onChange(of: isSearching) { _, newValue in
+            searching = newValue
         }
     }
 }

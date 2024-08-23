@@ -28,8 +28,10 @@ struct NoticeListView: View {
     @State private var isLoadMore: Bool = false
     @State private var selectedCategory: String = "전체"
 
-    @State private var selectedParam = "제목"
-    let params = ["제목", "내용", "작성자"]
+    @State private var selectedScope: SearchScope = .title
+    enum SearchScope {
+        case title, content, username
+    }
 
     var body: some View {
         NavigationStack {
@@ -84,12 +86,17 @@ struct NoticeListView: View {
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "검색어를 입력하세요"
             )
+            .searchScopes($selectedScope, activation: .onSearchPresentation) {
+                Text("제목").tag(SearchScope.title)
+                Text("내용").tag(SearchScope.content)
+                Text("작성자").tag(SearchScope.username)
+            }
             .onSubmit(of: .search) {
                 notices = []
                 pageNum = 1
                 fetchNotices()
             }
-            .onChange(of: isLoadMore) { newValue, _ in
+            .onChange(of: isLoadMore) { _, newValue in
                 if !newValue {
                     isLoadMore = false
                     loadMore()
@@ -99,6 +106,21 @@ struct NoticeListView: View {
                 notices = []
                 pageNum = 1
                 fetchNotices()
+            }
+            .onChange(of: selectedScope) { _, _ in
+                if !searchText.isEmpty {
+                    notices = []
+                    pageNum = 1
+                    fetchNotices()
+                }
+            }
+            .onChange(of: searching) { _, newValue in
+                if !newValue {
+                    selectedScope = .title
+                    notices = []
+                    pageNum = 1
+                    fetchNotices()
+                }
             }
             .onAppear {
                 if notices.isEmpty {
@@ -136,16 +158,14 @@ struct NoticeListView: View {
         return ""
     }
 
-    func generateSearchParam(selectedParam: String, searchText: String) -> String {
-        switch selectedParam {
-        case "제목":
+    func generateSearchParam(selectedScope _: SearchScope, searchText: String) -> String {
+        switch selectedScope {
+        case .title:
             return "&title=\(searchText)"
-        case "내용":
+        case .content:
             return "&content=\(searchText)"
-        case "작성자":
+        case .username:
             return "&username=\(searchText)"
-        default:
-            return ""
         }
     }
 
@@ -160,7 +180,7 @@ struct NoticeListView: View {
             self.isLoading = true
         }
 
-        let searchParam = generateSearchParam(selectedParam: selectedParam, searchText: searchText)
+        let searchParam = generateSearchParam(selectedScope: selectedScope, searchText: searchText)
 
         var catParam = ""
         switch bbsConfigFk {
@@ -268,12 +288,8 @@ struct NoticeList: View {
             pageNum = 1
             isLoadMore = true
         }
-        .onChange(of: isSearching) { newValue, _ in
-            if newValue {
-                notices = []
-                pageNum = 1
-                isLoadMore = true
-            }
+        .onChange(of: isSearching) { _, newValue in
+            searching = newValue
         }
     }
 }
