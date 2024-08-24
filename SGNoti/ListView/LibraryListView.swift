@@ -53,8 +53,8 @@ struct LibraryListView: View {
                 pageNum = 1
                 fetchLibraryNotices()
             }
-            .onChange(of: isLoadMore) { newValue, _ in
-                if !newValue {
+            .onChange(of: isLoadMore) { _, newValue in
+                if newValue {
                     isLoadMore = false
                     loadMore()
                 }

@@ -97,7 +97,7 @@ struct NoticeListView: View {
                 fetchNotices()
             }
             .onChange(of: isLoadMore) { _, newValue in
-                if !newValue {
+                if newValue {
                     isLoadMore = false
                     loadMore()
                 }
