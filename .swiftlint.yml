@@ -10,6 +10,7 @@ identifier_name:
   excluded:
     - db
     - id
+    - config_pkid
     
 line_length:
   warning: 200

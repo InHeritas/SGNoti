@@ -21,7 +21,7 @@ struct NoticeData: Identifiable, Decodable, Equatable {
         case title
         case userName
         case regDate
-        case configPkid
+        case config_pkid
         case pkId
         case isTop
     }
@@ -57,7 +57,7 @@ struct NoticeData: Identifiable, Decodable, Equatable {
         }
 
         // config_pkid 처리
-        configPkid = try container.decodeIfPresent(String.self, forKey: .configPkid)
+        configPkid = try container.decodeIfPresent(String.self, forKey: .config_pkid)
         pkId = try container.decode(Int.self, forKey: .pkId)
 
         // isTop 처리
