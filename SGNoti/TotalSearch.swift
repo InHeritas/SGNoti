@@ -22,9 +22,6 @@ struct TotalSearch: View {
     @State private var isLoadMore: Bool = false
     @State private var selectedCategory: String = "전체"
 
-    @State private var selectedParam = "제목"
-    let params = ["제목", "내용", "작성자"]
-
     var body: some View {
         NavigationStack {
             ZStack {
