@@ -236,11 +236,17 @@ struct NoticeList: View {
                         if !notice.tags.isEmpty {
                             HStack {
                                 ForEach(notice.tags, id: \.self) { tag in
-                                    Text(tag)
+                                    Text(tag.trimmingCharacters(in: CharacterSet(charactersIn: "[]")))
                                         .font(.footnote)
-                                        .foregroundStyle(Color("sogang_red"))
+                                        .foregroundStyle(Color("grey900"))
+                                        .hpadding(5).vpadding(2)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                .foregroundStyle(Color(.systemGray6))
+                                        )
                                 }
                             }
+                            .padding(.bottom, 2)
                         }
                         HStack {
                             if notice.isTop {

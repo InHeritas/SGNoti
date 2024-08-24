@@ -233,12 +233,20 @@ struct NoticeRow: View {
     var body: some View {
         NavigationLink(destination: NoticeContentView(pkId: notice.pkId)) {
             VStack(alignment: .leading, spacing: 6) {
-                HStack {
-                    ForEach(notice.tags, id: \.self) { tag in
-                        Text(tag)
-                            .font(.footnote)
-                            .foregroundStyle(Color("sogang_red"))
+                if !notice.tags.isEmpty {
+                    HStack {
+                        ForEach(notice.tags, id: \.self) { tag in
+                            Text(tag.trimmingCharacters(in: CharacterSet(charactersIn: "[]")))
+                                .font(.footnote)
+                                .foregroundStyle(Color("grey900"))
+                                .hpadding(5).vpadding(2)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                        .foregroundStyle(Color(.systemGray6))
+                                )
+                        }
                     }
+                    .padding(.bottom, 2)
                 }
                 Text(notice.title ?? "No Title")
                     .lineLimit(1)
