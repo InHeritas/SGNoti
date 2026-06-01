@@ -293,13 +293,6 @@ struct NoticeContentView: View {
         }
         return nil
     }
-
-    func removeSGParameter(from url: String) -> String {
-        if let range = url.range(of: "?sg=") {
-            return String(url[..<range.lowerBound])
-        }
-        return url
-    }
 }
 
 #Preview {
