@@ -94,7 +94,8 @@ struct TotalSearch: View {
         }
 
         let defaultParam = "&searchOption=title&dateOption=all&sortBy=date"
-        let url = "https://www.sogang.ac.kr/api/api/v1/mainKo/BbsData/findAllSearch?pageNum=\(pageNum)&pageSize=15&keyword=\(searchText)\(defaultParam)"
+        let encodedKeyword = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? searchText
+        let url = "https://www.sogang.ac.kr/api/api/v1/mainKo/BbsData/findAllSearch?pageNum=\(pageNum)&pageSize=15&keyword=\(encodedKeyword)\(defaultParam)"
 
         AF.request(url, method: .get).responseDecodable(of: APIResponse.self) { response in
             switch response.result {

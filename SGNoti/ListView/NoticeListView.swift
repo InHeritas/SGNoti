@@ -159,13 +159,14 @@ struct NoticeListView: View {
     }
 
     func generateSearchParam(selectedScope _: SearchScope, searchText: String) -> String {
+        let encoded = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? searchText
         switch selectedScope {
         case .title:
-            return "&title=\(searchText)"
+            return "&title=\(encoded)"
         case .content:
-            return "&content=\(searchText)"
+            return "&content=\(encoded)"
         case .username:
-            return "&username=\(searchText)"
+            return "&username=\(encoded)"
         }
     }
 
