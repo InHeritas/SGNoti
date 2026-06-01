@@ -34,7 +34,11 @@ struct NoticeData: Identifiable, Decodable, Equatable {
         if let rawTitle = rawTitle {
             let tags = extractTags(from: rawTitle)
             self.tags = tags
-            title = rawTitle.replacingOccurrences(of: tags.joined(separator: " "), with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            var cleanedTitle = rawTitle
+            for tag in tags {
+                cleanedTitle = cleanedTitle.replacingOccurrences(of: tag, with: "")
+            }
+            title = cleanedTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         } else {
             tags = []
             title = rawTitle
@@ -66,6 +70,11 @@ struct NoticeData: Identifiable, Decodable, Equatable {
         } else {
             isTop = false // isTop 필드가 없으면 기본값은 false
         }
+    }
+
+    // 동등성은 공지 고유 식별자(pkId) 기준으로 판단
+    static func == (lhs: NoticeData, rhs: NoticeData) -> Bool {
+        lhs.pkId == rhs.pkId
     }
 }
 
