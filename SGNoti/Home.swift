@@ -46,8 +46,8 @@ struct Home: View {
                     .padding()
                     List {
                         ForEach(sectionOrder, id: \.self) { section in
-                            if !hiddenNotices.contains(section) {
-                                Section(header: Text(noticeName[bbsConfigFk.firstIndex(of: section)!])) {
+                            if !hiddenNotices.contains(section), let index = bbsConfigFk.firstIndex(of: section) {
+                                Section(header: Text(noticeName[index])) {
                                     ForEach(getNotices(for: section)) { notice in
                                         NoticeRow(notice: notice)
                                     }
@@ -279,9 +279,9 @@ struct EditSectionsView: View {
                 // 순서 변경 섹션
                 Section(header: Text("순서 변경")) {
                     ForEach(sectionOrder, id: \.self) { section in
-                        if !hiddenNotices.contains(section) {
+                        if !hiddenNotices.contains(section), let index = bbsConfigFk.firstIndex(of: section) {
                             HStack {
-                                Text(noticeNames[bbsConfigFk.firstIndex(of: section)!])
+                                Text(noticeNames[index])
                                 Spacer()
                                 Button(action: {
                                     hiddenNotices.append(section)
@@ -298,10 +298,10 @@ struct EditSectionsView: View {
                 // 글 개수 설정 섹션
                 Section(header: Text("글 개수 설정")) {
                     ForEach(sectionOrder, id: \.self) { section in
-                        if !hiddenNotices.contains(section) {
+                        if !hiddenNotices.contains(section), let index = bbsConfigFk.firstIndex(of: section) {
                             LabeledStepper(
-                                noticeNames[bbsConfigFk.firstIndex(of: section)!],
-                                value: $noticeCounts[bbsConfigFk.firstIndex(of: section)!],
+                                noticeNames[index],
+                                value: $noticeCounts[index],
                                 in: 1 ... 5
                             )
                             .buttonStyle(.plain)
@@ -312,9 +312,9 @@ struct EditSectionsView: View {
                 // 숨긴 공지 표시 섹션
                 Section(header: Text("숨긴 공지")) {
                     ForEach(bbsConfigFk, id: \.self) { section in
-                        if hiddenNotices.contains(section) {
+                        if hiddenNotices.contains(section), let index = bbsConfigFk.firstIndex(of: section) {
                             HStack {
-                                Text(noticeNames[bbsConfigFk.firstIndex(of: section)!])
+                                Text(noticeNames[index])
                                 Spacer()
                                 Button(action: {
                                     if let index = hiddenNotices.firstIndex(of: section) {
