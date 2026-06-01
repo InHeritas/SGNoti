@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct Bookmark: View {
-    @Query private var bookmarks: [BookmarkedNoticeDetail]
+    @Query(sort: \BookmarkedNoticeDetail.regDate, order: .reverse) private var bookmarks: [BookmarkedNoticeDetail]
     @State private var isEditing: Bool = false
     @State private var showDeleteAllAlert: Bool = false
     @Environment(\.modelContext) private var modelContext
